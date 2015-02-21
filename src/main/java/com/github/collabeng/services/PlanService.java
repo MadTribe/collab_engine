@@ -11,18 +11,18 @@ import java.util.List;
 
 public class PlanService {
     @Inject
-    private Provider<PlanDao> planDaoProvider;
+    private PlanDao planDaoProvider;
 
     @Transactional
     public List<PlanEntity> listAll(){
-        return this.planDaoProvider.get().findAll();
+        return this.planDaoProvider.findAll();
     }
 
     @Transactional
     public void createPlan(NewPlanRequest newPlan) {
         PlanEntity plan = new PlanEntity(newPlan.getName(),
                                          newPlan.getDescription());
-        planDaoProvider.get().persist(plan);
-        planDaoProvider.get().flush();
+        planDaoProvider.persist(plan);
+        planDaoProvider.flush();
     }
 }

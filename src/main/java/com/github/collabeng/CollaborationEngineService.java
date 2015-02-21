@@ -1,5 +1,6 @@
 package com.github.collabeng;
 
+import com.github.collabeng.api.LoginResource;
 import com.github.collabeng.api.PlanResource;
 import com.github.collabeng.injection.GuiceContainer;
 import com.github.collabeng.services.PlanService;
@@ -36,8 +37,6 @@ public class CollaborationEngineService extends Application<CollaborationEngineC
             }
         });
 
-//        bootstrap.addBundle(new AssetsBundle("/build/nw/assets/css", "/nw/css"));
-
     }
 
     @Override
@@ -45,6 +44,7 @@ public class CollaborationEngineService extends Application<CollaborationEngineC
         GuiceContainer.init("persistenceUnit", environment, configuration);
 
         environment.jersey().register(GuiceContainer.get(PlanResource.class));
-//        environment.jersey().register(GuiceContainer.get(WeChatResource.class));
+        environment.jersey().register(GuiceContainer.get(LoginResource.class));
+
     }
 }

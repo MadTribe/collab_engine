@@ -35,7 +35,7 @@ public class PlanResource {
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
-    public Response list(@Context HttpServletRequest request,
+    public Response create(@Context HttpServletRequest request,
                                          NewPlanRequest newPlan) {
         LOG.info("" + newPlan);
         planService.createPlan(newPlan);

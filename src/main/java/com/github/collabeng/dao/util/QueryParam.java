@@ -19,4 +19,8 @@ public class QueryParam<X> {
     public X getValue() {
         return value;
     }
+
+    public static <X> QueryParam of(String name, X value){
+        return new QueryParam<>(name, value);
+    }
 }

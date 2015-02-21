@@ -47,6 +47,8 @@ public final class GuiceContainer {
 
         ManagedDataSource managedDataSource = configuration.getDatabase().build(environment.metrics(), "mysql");
 
+        //Guice.createInjector(new ServletModule());
+
         JpaPersistModule persistModule = new JpaPersistModule(persistenceUnit);
         Properties connectionProperties = new Properties();
 

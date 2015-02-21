@@ -1,0 +1,13 @@
+User Stories
+============
+
+Agent is either a human worker or an automated software agent
+
+As an agent I can log in.
+As a planner I can create a plan
+As a planner I can add a step to a plan
+As a planner I define the required input for a step
+As a planner I can define the completion statuses/events/outcomes for a step
+As an agent  I can start a task.
+As an agent  I can suspend a task.
+As an agent I can suspend a task by asking for information.  
