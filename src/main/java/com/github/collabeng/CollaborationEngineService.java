@@ -2,10 +2,9 @@ package com.github.collabeng;
 
 import com.github.collabeng.api.LoginResource;
 import com.github.collabeng.api.PlanResource;
-import com.github.collabeng.injection.GuiceContainer;
-import com.github.collabeng.services.PlanService;
+import com.github.collabeng.injection.GuiceInitializer;
+import com.google.inject.servlet.GuiceFilter;
 import io.dropwizard.Application;
-import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.migrations.MigrationsBundle;
 import io.dropwizard.setup.Bootstrap;
@@ -41,10 +40,12 @@ public class CollaborationEngineService extends Application<CollaborationEngineC
 
     @Override
     public void run(CollaborationEngineConfiguration configuration, Environment environment) throws Exception {
-        GuiceContainer.init("persistenceUnit", environment, configuration);
+        GuiceInitializer.init("persistenceUnit", environment, configuration);
 
-        environment.jersey().register(GuiceContainer.get(PlanResource.class));
-        environment.jersey().register(GuiceContainer.get(LoginResource.class));
+        environment.jersey().register(GuiceFilter.class);
+
+        environment.jersey().register(GuiceInitializer.get(PlanResource.class));
+        environment.jersey().register(GuiceInitializer.get(LoginResource.class));
 
     }
 }

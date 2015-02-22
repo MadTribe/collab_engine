@@ -13,6 +13,7 @@
         <version.wechatapi>1.0.3-SNAPSHOT</version.wechatapi>
         <version.jdk>1.8</version.jdk>
         <version.h2>1.4.185</version.h2>
+        <version.guice>3.0</version.guice>
     </properties>
 
     <dependencies>
@@ -89,13 +90,19 @@
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
-            <version>3.0</version>
+            <version>${version.guice}</version>
         </dependency>
 
         <dependency>
             <groupId>com.google.inject.extensions</groupId>
             <artifactId>guice-persist</artifactId>
-            <version>3.0</version>
+            <version>${version.guice}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-servlet</artifactId>
+            <version>${version.guice}</version>
         </dependency>
 
         <dependency>
