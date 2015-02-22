@@ -8,7 +8,7 @@ import java.util.List;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
-public class PlanDaoTest extends GenericPersistenceDaoTest {
+public class PlanDaoTest extends BaseDaoTest {
 
     @Test
     public void should_create_an_user() {
@@ -16,8 +16,12 @@ public class PlanDaoTest extends GenericPersistenceDaoTest {
 
         userDao.removeAll();
         userDao.persist(new PlanEntity());
+        userDao.persist(new PlanEntity());
+        userDao.persist(new PlanEntity());
+        userDao.persist(new PlanEntity());
+
 
         final List<PlanEntity> weChatUsers = userDao.findAll();
-        assertThat(weChatUsers.size(), is(1));
+        assertThat(weChatUsers.size(), is(4));
     }
 }

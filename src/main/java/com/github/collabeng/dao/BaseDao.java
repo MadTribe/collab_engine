@@ -12,6 +12,10 @@ import com.google.inject.Provider;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Optional;
@@ -22,17 +26,17 @@ import static java.lang.String.format;
 import static java.util.Optional.*;
 
 
-public abstract class GenericPersistenceDao<T extends BaseEntity> {
+public abstract class BaseDao<T extends BaseEntity> {
 
     @Inject
     private Provider<EntityManager> entityManager;
 
     private Class<T> entityClass;
 
-    private static final Logger LOG = Logger.getLogger(GenericPersistenceDao.class.getName());
+    private static final Logger LOG = Logger.getLogger(BaseDao.class.getName());
 
     @SuppressWarnings("unchecked")
-    public GenericPersistenceDao() {
+    public BaseDao() {
         if (getClass().getGenericSuperclass() instanceof ParameterizedType) {
             this.entityClass = (Class<T>) ((ParameterizedType) getClass()
                     .getGenericSuperclass()).getActualTypeArguments()[0];
@@ -54,10 +58,13 @@ public abstract class GenericPersistenceDao<T extends BaseEntity> {
         return ofNullable(getEntityManager().find(entityClass, id));
     }
 
+
     public List<T> findAll() {
-        final Query q = getEntityManager().createQuery(
-                format("select distinct t from %s t", entityClass.getSimpleName()));
-        return q.getResultList();
+        final CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<T> query = criteriaBuilder.createQuery(entityClass);
+        query.from(entityClass);
+
+        return getEntityManager().createQuery(query).getResultList();
     }
 
     protected javax.persistence.TypedQuery<T> query(String queryStr) {
@@ -109,8 +116,15 @@ public abstract class GenericPersistenceDao<T extends BaseEntity> {
     }
 
     public void removeAll() {
-        final Query query = getEntityManager().createQuery(format("delete from %s", entityClass.getSimpleName()));
-        query.executeUpdate();
+
+        CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        CriteriaDelete criteriaDelete = criteriaBuilder.<T>createCriteriaDelete(entityClass);
+        criteriaDelete.from(entityClass);
+
+
+        int result = getEntityManager().createQuery(criteriaDelete).executeUpdate();
+        LOG.info("delete @" + result);
+
     }
 
     protected QueryParam<T> param(String name, T value){

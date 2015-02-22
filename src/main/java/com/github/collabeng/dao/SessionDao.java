@@ -10,7 +10,7 @@ import static com.github.collabeng.dao.util.QueryParam.of;
 /**
  * Created by paul.smout on 26/01/2015.
  */
-public class SessionDao extends GenericPersistenceDao<SessionEntity> {
+public class SessionDao extends BaseDao<SessionEntity> {
     public Optional<SessionEntity> findBySessionKey(String key){
        return query("select distinct t from SessionEntity t where t.key = :key",of("key", key));
     }

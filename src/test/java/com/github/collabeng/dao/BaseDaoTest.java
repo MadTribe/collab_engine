@@ -6,7 +6,6 @@ import com.google.inject.persist.PersistService;
 import com.google.inject.persist.jpa.JpaPersistModule;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -14,7 +13,7 @@ import javax.persistence.EntityManager;
 /**
  * Created by paul.smout on 26/01/2015.
  */
-public class GenericPersistenceDaoTest {
+public class BaseDaoTest {
     protected EntityManager entityManager;
     private static Injector injector;
 
@@ -58,8 +57,8 @@ public class GenericPersistenceDaoTest {
         entityManager.clear();
     }
 
-    protected void removeAll(Class<? extends GenericPersistenceDao>... daoClasses) {
-        for (Class<? extends GenericPersistenceDao> daoClass : daoClasses) {
+    protected void removeAll(Class<? extends BaseDao>... daoClasses) {
+        for (Class<? extends BaseDao> daoClass : daoClasses) {
             get(daoClass).removeAll();
         }
     }
