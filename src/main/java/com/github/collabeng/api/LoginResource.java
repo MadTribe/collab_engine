@@ -1,7 +1,7 @@
 package com.github.collabeng.api;
 
 import com.github.collabeng.api.requests.LoginRequest;
-import com.github.collabeng.api.requests.NewPlanRequest;
+import static com.github.collabeng.constants.Names.*;
 import com.github.collabeng.api.responses.LoginSuccess;
 import com.github.collabeng.domain.SessionEntity;
 import com.github.collabeng.services.AuthenticationService;
@@ -18,10 +18,10 @@ import java.util.Optional;
 /**
  * Created by paul.smout on 20/02/2015.
  */
-@Path("/api/login")
+@Path("/login")
 public class LoginResource {
 
-    private static final String USER_SESSION_ID = "session_id";
+
     @Inject
     private AuthenticationService authenticationService;
 
