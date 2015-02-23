@@ -24,7 +24,6 @@ public class CollaborationEngineService extends Application<CollaborationEngineC
        new CollaborationEngineService().run(args);
     }
 
-
     @Override
     public String getName() {
         return "Collaboration Engine";
@@ -50,11 +49,8 @@ public class CollaborationEngineService extends Application<CollaborationEngineC
 
         environment.servlets().addServletListeners(guiceMain);
 
-
         // NB other filters and resources are set up in the Guice AppServletModule
-//
-   //     environment.jersey().register(guiceMain.get(PlanResource.class));
-          environment.jersey().register(guiceMain.get(DummyRootResource.class));
+        environment.jersey().register(guiceMain.get(DummyRootResource.class));
 
     }
 }
