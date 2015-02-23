@@ -112,6 +112,11 @@ public abstract class BaseDao<T extends BaseEntity> {
     public long count() {
         final Query q = getEntityManager().createQuery(
                 format("select count(t) from %s t", entityClass.getSimpleName()));
+
+        final CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
+        query.select(criteriaBuilder.count(query.from(entityClass)));
+
         return (Long) q.getSingleResult();
     }
 

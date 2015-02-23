@@ -23,5 +23,7 @@ public class PlanDaoTest extends BaseDaoTest {
 
         final List<PlanEntity> weChatUsers = userDao.findAll();
         assertThat(weChatUsers.size(), is(4));
+
+        assertThat(userDao.count(),is(4L));
     }
 }
