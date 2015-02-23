@@ -56,4 +56,12 @@ public class UserEntity extends BaseEntity {
     public Encoding getEncoding() {
         return encoding;
     }
+
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+                "username='" + username + '\'' +
+                ", active=" + active +
+                '}';
+    }
 }

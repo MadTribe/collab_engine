@@ -6,6 +6,8 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.persist.PersistService;
 import com.google.inject.persist.jpa.JpaPersistModule;
+import com.google.inject.servlet.GuiceServletContextListener;
+import com.google.inject.servlet.ServletModule;
 import io.dropwizard.db.ManagedDataSource;
 import io.dropwizard.setup.Environment;
 import org.hibernate.jpa.HibernatePersistenceProvider;
@@ -19,17 +21,21 @@ import java.util.logging.Logger;
 
 import static java.util.Arrays.asList;
 
-public final class GuiceContainer {
-    private static Injector instance;
-    private static final Logger LOG = Logger.getLogger(GuiceContainer.class.getName());
+public final class GuiceInitializer extends GuiceServletContextListener {
 
-    private GuiceContainer() {
-    }
 
-    public synchronized static void init(final String persistenceUnit,  Environment environment, final CollaborationEngineConfiguration configuration) throws ClassNotFoundException {
-        if (instance != null) {
-            return;
-        }
+
+    private Injector instance;
+    private static final Logger LOG = Logger.getLogger(GuiceInitializer.class.getName());
+    private final String persistenceUnit;
+    private final Environment environment;
+    private final CollaborationEngineConfiguration configuration;
+
+    public GuiceInitializer(final String persistenceUnit,  Environment environment, final CollaborationEngineConfiguration configuration) {
+        this.persistenceUnit = persistenceUnit;
+        this.environment = environment;
+        this.configuration = configuration;
+
 
         PersistenceProviderResolverHolder.setPersistenceProviderResolver(new PersistenceProviderResolver() {
             private final List<PersistenceProvider> providers_ = asList((PersistenceProvider) new HibernatePersistenceProvider());
@@ -45,9 +51,13 @@ public final class GuiceContainer {
         });
 
 
-        ManagedDataSource managedDataSource = configuration.getDatabase().build(environment.metrics(), "mysql");
+        ManagedDataSource managedDataSource = null;
+        try {
+            managedDataSource = configuration.getDatabase().build(environment.metrics(), "mysql");
+        } catch (ClassNotFoundException e) {
+            new RuntimeException("Startup Failed Because Mysql not found ", e);
+        }
 
-        //Guice.createInjector(new ServletModule());
 
         JpaPersistModule persistModule = new JpaPersistModule(persistenceUnit);
         Properties connectionProperties = new Properties();
@@ -63,10 +73,16 @@ public final class GuiceContainer {
         persistenceInjector.getInstance(PersistServiceInitializer.class);
 
         final CollaborationModule collaborationModule = new CollaborationModule(persistenceInjector, configuration);
-        instance = persistenceInjector.createChildInjector(collaborationModule);
+        instance = persistenceInjector.createChildInjector(collaborationModule).createChildInjector(new AppServletModule());
     }
 
-    public static <T> T get(Class<T> clazz) {
+    @Override
+    protected Injector getInjector() {
+
+        return instance;
+    }
+
+    public  <T> T get(Class<T> clazz) {
         return instance.getInstance(clazz);
     }
 
@@ -75,7 +91,6 @@ public final class GuiceContainer {
         PersistServiceInitializer(PersistService service) {
             LOG.info("Starting JPA SERVICE");
             service.start();
-            // At this point JPA is started and ready.
         }
     }
 }

@@ -13,6 +13,8 @@
         <version.wechatapi>1.0.3-SNAPSHOT</version.wechatapi>
         <version.jdk>1.8</version.jdk>
         <version.h2>1.4.185</version.h2>
+        <version.guice>3.0</version.guice>
+        <version.jersey>1.18.3</version.jersey>
     </properties>
 
     <dependencies>
@@ -25,17 +27,23 @@
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-server</artifactId>
-            <version>1.17.1</version>
+            <version>${version.jersey}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-client</artifactId>
-            <version>1.18.3</version>
+            <version>${version.jersey}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-servlet</artifactId>
-            <version>1.18.3</version>
+            <version>${version.jersey}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.sun.jersey.contribs</groupId>
+            <artifactId>jersey-guice</artifactId>
+            <version>${version.jersey}</version>
         </dependency>
 
         <dependency>
@@ -89,13 +97,19 @@
         <dependency>
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
-            <version>3.0</version>
+            <version>${version.guice}</version>
         </dependency>
 
         <dependency>
             <groupId>com.google.inject.extensions</groupId>
             <artifactId>guice-persist</artifactId>
-            <version>3.0</version>
+            <version>${version.guice}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.inject.extensions</groupId>
+            <artifactId>guice-servlet</artifactId>
+            <version>${version.guice}</version>
         </dependency>
 
         <dependency>

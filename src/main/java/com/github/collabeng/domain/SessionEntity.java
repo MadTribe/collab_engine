@@ -31,4 +31,12 @@ public class SessionEntity extends BaseEntity {
     public String getKey() {
         return key;
     }
+
+    @Override
+    public String toString() {
+        return "SessionEntity{" +
+                "user=" + user +
+                ", key='" + key + '\'' +
+                '}';
+    }
 }

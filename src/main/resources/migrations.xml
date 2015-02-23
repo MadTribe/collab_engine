@@ -16,4 +16,15 @@
             <column name="ACTIVE" valueNumeric="1"></column>
         </insert>
     </changeSet>
+
+    <changeSet id="2" author="paul.smout">
+        <insert tableName="UserEntity">
+            <column name="VERSION" valueNumeric="0">0</column>
+            <column name="USERNAME">TEST2</column>
+            <column name="PASSWORD">CDE123</column>
+            <column name="ENCODING">PLAIN</column>
+            <column name="SALT">123</column>
+            <column name="ACTIVE" valueNumeric="1"></column>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

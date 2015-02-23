@@ -4,6 +4,7 @@ import com.github.collabeng.api.requests.NewPlanRequest;
 import com.github.collabeng.domain.PlanEntity;
 import com.github.collabeng.services.PlanService;
 import com.google.inject.Inject;
+import com.google.inject.servlet.RequestScoped;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -19,6 +20,7 @@ import java.util.logging.Logger;
 import static java.util.stream.Collectors.toList;
 
 @Path("/api/plan")
+//@Path("/")
 public class PlanResource {
 
     private static final Logger LOG = Logger.getLogger(PlanResource.class.getName());
