@@ -8,7 +8,14 @@ As a planner I can create a plan
 As a planner I can add a step to a plan
 As a planner I define the required input for a step
 As a planner I can define the completion statuses/events/outcomes for a step
+As a planner I can log estimated probabilities of different outcomes.
 As an agent  I can start a task.
 As an agent  I can suspend a task.
 As an agent I can suspend a task by asking for information.  
+
+As a user I can receive messages from the system.
+As a hr agent I can find users agents with particular skills.
+As a review agent I can score task deliverables in various categories.
+As a plan reviewer I can simulate successful execution of the plan.
+As a plan reviewer I can simulate partially successful execution of the plan.
 
