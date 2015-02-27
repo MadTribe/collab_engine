@@ -68,10 +68,6 @@ public final class GuiceInitializer extends GuiceServletContextListener {
         final Injector persistenceInjector = Guice.createInjector(persistModule);
 
 
-
-        //start the persist service
-        persistenceInjector.getInstance(PersistServiceInitializer.class);
-
         final CollaborationModule collaborationModule = new CollaborationModule(persistenceInjector, configuration);
         instance = persistenceInjector.createChildInjector(collaborationModule).createChildInjector(new AppServletModule());
     }
@@ -86,11 +82,5 @@ public final class GuiceInitializer extends GuiceServletContextListener {
         return instance.getInstance(clazz);
     }
 
-    public static class PersistServiceInitializer {
-        @Inject
-        PersistServiceInitializer(PersistService service) {
-            LOG.info("Starting JPA SERVICE");
-            service.start();
-        }
-    }
+
 }

@@ -5,7 +5,8 @@ import com.github.collabeng.domain.PlanEntity;
 /**
  * Created by paul.smout on 26/01/2015.
  */
-public class PlanDao extends BaseDao<PlanEntity> {
+public class PlanDao extends AccessControlDao<PlanEntity> {
+
 
 
 }

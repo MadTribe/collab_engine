@@ -35,9 +35,9 @@ public class PlanService {
 
     @Transactional
     public void createPlan(NewPlanRequest newPlan) {
-        PlanEntity plan = new PlanEntity(newPlan.getName(),
+        PlanEntity plan = new PlanEntity(currentUser.get(),
+                                         newPlan.getName(),
                                          newPlan.getDescription());
         planDaoProvider.persist(plan);
-        planDaoProvider.flush();
     }
 }

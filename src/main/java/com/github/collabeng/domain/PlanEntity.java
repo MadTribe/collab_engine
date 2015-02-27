@@ -4,12 +4,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.validation.constraints.NotNull;
 
 /**
  * Created by paul.smout on 26/01/2015.
  */
 @Entity
-public class PlanEntity extends BaseEntity {
+public class PlanEntity extends OwnedEntity {
     @Column(name = "NAME")
     private String name;
 
@@ -19,7 +20,8 @@ public class PlanEntity extends BaseEntity {
     public PlanEntity() {
     }
 
-    public PlanEntity(String name, String description) {
+    public PlanEntity( UserEntity owner, String name, String description) {
+        super(owner);
         this.name = name;
         this.description = description;
     }

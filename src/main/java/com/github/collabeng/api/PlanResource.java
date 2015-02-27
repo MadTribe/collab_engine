@@ -20,7 +20,6 @@ import java.util.logging.Logger;
 import static java.util.stream.Collectors.toList;
 
 @Path("/api/plan")
-//@Path("/")
 public class PlanResource {
 
     private static final Logger LOG = Logger.getLogger(PlanResource.class.getName());

@@ -9,12 +9,14 @@ import com.google.inject.Key;
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
 import com.google.inject.name.Names;
+import com.google.inject.persist.PersistFilter;
 import com.google.inject.servlet.RequestScoped;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.api.core.ResourceConfig;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
+import javax.servlet.FilterRegistration;
 import javax.servlet.http.HttpServletRequest;
 import java.util.logging.Logger;
 
@@ -31,6 +33,7 @@ public class AppServletModule extends ServletModule {
         LOG.info("Configure Guice Servlets");
         bind(GuiceContainer.class);
 
+        filter("/*").through(PersistFilter.class);
         filter("/api/*").through(UserIdentityFilter.class);
 
 

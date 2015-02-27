@@ -6,8 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created by paul.smout on 26/01/2015.
  */
 public class NewPlanRequest {
-    @JsonProperty
-
     private String name;
     private String description;
 
