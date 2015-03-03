@@ -1,29 +1,76 @@
 package com.github.collabeng.dao;
 
 import com.github.collabeng.domain.PlanEntity;
+import com.github.collabeng.domain.UserEntity;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.Optional;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 public class PlanDaoTest extends BaseDaoTest {
 
     @Test
-    public void should_create_an_user() {
-        final PlanDao userDao = get(PlanDao.class);
+    public void should_create_a_plan() {
+        final PlanDao planDao = get(PlanDao.class);
+        final UserDao userDao = get(UserDao.class);
 
-        userDao.removeAll();
-        userDao.persist(new PlanEntity());
-        userDao.persist(new PlanEntity());
-        userDao.persist(new PlanEntity());
-        userDao.persist(new PlanEntity());
+        UserEntity userEntity = userDao.persist(new UserEntity());
+
+        planDao.removeAll();
+
+        setCurrentUser(userEntity);
+
+        planDao.persist(new PlanEntity(null,"name1","desc1"));
+        planDao.persist(new PlanEntity(null,"name2","desc1"));
+        planDao.persist(new PlanEntity(null,"name3","desc1"));
+        planDao.persist(new PlanEntity(null,"name4","desc1"));
 
 
-        final List<PlanEntity> weChatUsers = userDao.findAll();
-        assertThat(weChatUsers.size(), is(4));
+        final List<PlanEntity> plans = planDao.findAll();
+        assertThat(plans.size(), is(4));
 
-        assertThat(userDao.count(),is(4L));
+        for (PlanEntity plan : plans){
+            assertThat(plan.getOwner(), equalTo(userEntity));
+        }
+
+
+    }
+
+    @Test
+    public void should_edit_a_plan() {
+        final PlanDao planDao = get(PlanDao.class);
+        final UserDao userDao = get(UserDao.class);
+        assertThat(planDao.count(),is(0L));
+
+        UserEntity userEntity = userDao.persist(new UserEntity("","","",true));
+
+        setCurrentUser(userEntity);
+
+        PlanEntity planEntity = planDao.persist(new PlanEntity(userEntity,"name1","desc1"));
+
+        assertThat(planDao.count(),is(1L));
+
+        planDao.merge(planEntity.withName("name2"));
+
+        assertThat(planDao.count(),is(1L));
+
+        planDao.merge(planEntity.withName("name3"));
+        assertThat(planDao.count(),is(1L));
+
+        planDao.merge(planEntity.withName("name4"));
+        assertThat(planDao.count(),is(1L));
+
+        planDao.merge(planEntity.withName("name5"));
+        assertThat(planDao.count(),is(1L));
+
+        Optional<PlanEntity> result = planDao.find(planEntity.getId());
+        assertThat(result.get().getName(), equalTo("name5"));
+        assertThat(result.get().getVersion(), equalTo(4L));
+        assertThat(result.get().getOwner(), equalTo(userEntity));
+
     }
 }

@@ -1,7 +1,11 @@
 package com.github.collabeng.domain;
 
+import com.google.inject.internal.util.$ToStringBuilder;
+
 import javax.persistence.*;
 import java.util.Date;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Base entity, to generate the ID
@@ -24,6 +28,16 @@ public abstract class BaseEntity {
     @Column(name = "LAST_MODIFIED_AT")
     private Date lastModifiedAt;
 
+    public BaseEntity() {
+    }
+
+    public BaseEntity(BaseEntity baseEntity) {
+        this.id = baseEntity.id;
+        this.version = baseEntity.version;
+        this.createdAt = baseEntity.createdAt;
+        this.lastModifiedAt = baseEntity.lastModifiedAt;
+    }
+
     @PrePersist
     public void onCreate() {
         createdAt = new Date();
@@ -35,6 +49,33 @@ public abstract class BaseEntity {
         version++;
         lastModifiedAt = new Date();
     }
+
+    public abstract static class Builder{
+        protected BaseEntity entity;
+
+        protected Builder(){
+        }
+
+        public Builder buildFrom(BaseEntity baseEntity) {
+            checkNotNull(entity);
+            entity.id = baseEntity.id;
+            entity.version = baseEntity.version;
+            entity.createdAt = baseEntity.createdAt;
+            return this;
+        }
+
+        public Builder version(long version){
+            entity.version = version;
+            return this;
+        }
+
+        public Builder lastModifiedAt(Date lastModifiedAt){
+            entity.lastModifiedAt = lastModifiedAt;
+            return this;
+        }
+    }
+
+
 
     public long getId() {
         return id;

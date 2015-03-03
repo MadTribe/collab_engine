@@ -19,23 +19,19 @@ import static com.github.collabeng.constants.Names.CURRENT_USER_ENTITY;
 public class PlanService {
     private static final Logger LOG = Logger.getLogger(PlanService.class.getName());
 
-    @Inject
-    @Named(CURRENT_USER_ENTITY)
-    private Provider<UserEntity> currentUser;
 
     @Inject
     private PlanDao planDaoProvider;
 
     @Transactional
     public List<PlanEntity> listAll(){
-        LOG.info(" current user  " + currentUser.get() );
 
         return this.planDaoProvider.findAll();
     }
 
     @Transactional
     public void createPlan(NewPlanRequest newPlan) {
-        PlanEntity plan = new PlanEntity(currentUser.get(),
+        PlanEntity plan = new PlanEntity(null,
                                          newPlan.getName(),
                                          newPlan.getDescription());
         planDaoProvider.persist(plan);

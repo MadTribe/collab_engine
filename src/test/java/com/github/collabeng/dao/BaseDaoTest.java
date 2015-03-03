@@ -1,7 +1,8 @@
 package com.github.collabeng.dao;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import com.github.collabeng.domain.UserEntity;
+import com.google.inject.*;
+import com.google.inject.name.Named;
 import com.google.inject.persist.PersistService;
 import com.google.inject.persist.jpa.JpaPersistModule;
 import org.junit.After;
@@ -15,7 +16,9 @@ import javax.persistence.EntityManager;
  */
 public class BaseDaoTest {
     protected EntityManager entityManager;
-    private static Injector injector;
+    private  Injector injector;
+
+    private UserEntity currentUser;
 
     protected <T> T get(Class<T> clazz) {
         return injector.getInstance(clazz);
@@ -27,27 +30,24 @@ public class BaseDaoTest {
 
     @Before
     public void setUp() throws Exception {
+        System.out.println(">>>>> BaseDao Setup");
         synchronized (this) {
             if (injector == null) {
-                injector = Guice.createInjector(new JpaPersistModule("utPersistenceUnit"));
+                injector = Guice.createInjector(new JpaPersistModule("utPersistenceUnit"), new TestConfigModule());
                 startPersistService();
                 entityManager = get(EntityManager.class);
             }
         }
+
         entityManager.getTransaction().begin();
+            entityManager.getTransaction().setRollbackOnly();
+
     }
 
     @After
-    public void rollbackTransaction() {
-        if (entityManager.getTransaction().isActive()) {
-            entityManager.getTransaction().rollback();
-        }
-    }
-
-    protected void commitTransaction() {
-        if (entityManager.getTransaction().isActive()) {
-            entityManager.getTransaction().commit();
-        }
+    public void teardown() {
+        currentUser = null;
+        entityManager.getTransaction().rollback();
     }
 
     protected void flushDataInDB() {
@@ -63,6 +63,10 @@ public class BaseDaoTest {
         }
     }
 
+    protected void setCurrentUser(UserEntity currentUser){
+        this.currentUser = currentUser;
+    }
+
     protected EntityManager getEntityManager() {
         return entityManager;
     }
@@ -73,5 +77,22 @@ public class BaseDaoTest {
             service.start();
             // At this point JPA is started and ready.
         }
+    }
+
+    class TestConfigModule implements Module {
+
+        @Override
+        public void configure(Binder binder) {
+
+        }
+
+        @Provides
+        @Named("current-user")
+        UserEntity provideUserId() {
+
+            return currentUser;
+        }
+
+
     }
 }

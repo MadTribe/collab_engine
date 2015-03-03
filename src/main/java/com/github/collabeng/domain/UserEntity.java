@@ -57,6 +57,9 @@ public class UserEntity extends BaseEntity {
         return encoding;
     }
 
+
+
+
     @Override
     public String toString() {
         return "UserEntity{" +

@@ -11,8 +11,10 @@ As a planner I can define the completion statuses/events/outcomes for a step
 As a planner I can log estimated probabilities of different outcomes.
 As an agent  I can start a task.
 As an agent  I can suspend a task.
-As an agent I can suspend a task by asking for information.  
+As an agent I can suspend a task by asking for information.
 
+As an user I can ask a question about a task
+As an user I can log a suggestion on a task
 As a user I can receive messages from the system.
 As a hr agent I can find users agents with particular skills.
 As a review agent I can score task deliverables in various categories.

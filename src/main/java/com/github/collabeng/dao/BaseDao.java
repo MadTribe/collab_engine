@@ -78,11 +78,12 @@ public abstract class BaseDao<T extends BaseEntity> {
         return resultList.isEmpty() ? empty() : of(resultList.get(0));
     }
 
-    public void persist(T entity) {
+    public T persist(T entity) {
         LOG.info("Persisting Entity " + getEntityManager().getTransaction().isActive());
         LOG.info("Persisting Entity " + entityClass.getCanonicalName());
         getEntityManager().persist(entity);
         LOG.info("Finished Persisting Entity " + entityClass.getCanonicalName());
+        return entity;
     }
 
     public void flush() {
@@ -105,19 +106,16 @@ public abstract class BaseDao<T extends BaseEntity> {
         getEntityManager().remove(entity);
     }
 
-    public Optional<T> getReference(Long id) {
-        return ofNullable(getEntityManager().getReference(entityClass, id));
-    }
 
     public long count() {
-        final Query q = getEntityManager().createQuery(
-                format("select count(t) from %s t", entityClass.getSimpleName()));
+
 
         final CriteriaBuilder criteriaBuilder = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
         query.select(criteriaBuilder.count(query.from(entityClass)));
 
-        return (Long) q.getSingleResult();
+        return getEntityManager().createQuery(query).getSingleResult();
+
     }
 
     public void removeAll() {
