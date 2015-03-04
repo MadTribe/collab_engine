@@ -31,7 +31,17 @@ public class OwnedEntity extends BaseEntity {
         return owner;
     }
 
-    public void setOwner(UserEntity owner) {
-        this.owner = owner;
+
+    public OwnedEntity withOwner(UserEntity owner){
+        OwnedEntity ret = (OwnedEntity)copy();
+        ret.owner = owner;
+        return ret;
+    }
+
+    @Override
+    public String toString() {
+        return "" + super.toString() +
+                "owner=" + owner +
+                "}";
     }
 }

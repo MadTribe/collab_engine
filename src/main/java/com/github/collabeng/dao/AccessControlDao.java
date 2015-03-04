@@ -60,8 +60,7 @@ public abstract class AccessControlDao<T extends OwnedEntity> extends BaseDao<T>
 
     @Override
     public T persist(T entity) {
-        entity.setOwner(currentUser.get());
-        return super.persist((T)entity);
+        return super.persist((T)entity.withOwner(currentUser.get()));
     }
 
     @Override

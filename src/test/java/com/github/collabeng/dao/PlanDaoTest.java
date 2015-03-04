@@ -46,7 +46,7 @@ public class PlanDaoTest extends BaseDaoTest {
         final UserDao userDao = get(UserDao.class);
         assertThat(planDao.count(),is(0L));
 
-        UserEntity userEntity = userDao.persist(new UserEntity("","","",true));
+        UserEntity userEntity = userDao.persist(new UserEntity("paul","lalal","123",true));
 
         setCurrentUser(userEntity);
 
@@ -71,6 +71,9 @@ public class PlanDaoTest extends BaseDaoTest {
         assertThat(result.get().getName(), equalTo("name5"));
         assertThat(result.get().getVersion(), equalTo(4L));
         assertThat(result.get().getOwner(), equalTo(userEntity));
+
+        System.err.println("" + result);
+
 
     }
 }

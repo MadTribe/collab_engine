@@ -44,4 +44,12 @@ public class PlanEntity extends OwnedEntity {
     public String getDescription() {
         return description;
     }
+
+
+    @Override
+    public String toString() {
+        return "" + super.toString() +
+                "name='" + name + '\'' +
+                ", description='" + description;
+    }
 }

@@ -11,7 +11,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Base entity, to generate the ID
  */
 @MappedSuperclass
-public abstract class BaseEntity {
+public abstract class BaseEntity implements Cloneable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -75,7 +75,16 @@ public abstract class BaseEntity {
         }
     }
 
+    protected BaseEntity copy(){
+        BaseEntity ret = null;
+        try {
+            ret = (BaseEntity) this.clone();
 
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return ret;
+    }
 
     public long getId() {
         return id;
@@ -91,5 +100,16 @@ public abstract class BaseEntity {
 
     public Date getLastModifiedAt() {
         return lastModifiedAt;
+    }
+
+
+    @Override
+    public String toString() {
+        return "" + getClass().getName() +
+                "id=" + id +
+                ", version=" + version +
+                ", createdAt=" + createdAt +
+                ", lastModifiedAt=" + lastModifiedAt +
+                '}';
     }
 }
