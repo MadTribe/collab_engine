@@ -1,16 +1,15 @@
 package com.github.collabeng.api;
 
+import com.github.collabeng.api.error.UnknownPlanException;
 import com.github.collabeng.api.requests.NewPlanRequest;
+import com.github.collabeng.api.requests.NewPlanStepRequest;
 import com.github.collabeng.domain.PlanEntity;
 import com.github.collabeng.services.PlanService;
 import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -40,6 +39,17 @@ public class PlanResource {
                                          NewPlanRequest newPlan) {
         LOG.info("" + newPlan);
         planService.createPlan(newPlan);
+        return Response.ok().build();
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{planId}/step")
+    public Response createStep(@Context HttpServletRequest request,
+                               @PathParam("planId") long planId,
+                                NewPlanStepRequest newPlanStep) throws UnknownPlanException {
+        LOG.info("Creating new plan step " + newPlanStep);
+        planService.createPlanStep(newPlanStep, planId);
         return Response.ok().build();
     }
 }

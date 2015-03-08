@@ -25,27 +25,14 @@ public class PlanStepEntity extends OwnedEntity {
     public PlanStepEntity() {
     }
 
-    public PlanStepEntity(PlanEntity owningPlan, UserEntity owner, String name, String description) {
-        super(owner);
+    public PlanStepEntity(PlanEntity owningPlan, String name, String description) {
         this.name = name;
         this.description = description;
         this.owningPlan = owningPlan;
     }
 
-    public PlanStepEntity(PlanStepEntity planStepEntity) {
-        super(planStepEntity);
-        this.name = planStepEntity.name;
-        this.description = planStepEntity.description;
-        this.owningPlan = planStepEntity.owningPlan;
-    }
-
     public String getName() {
         return name;
-    }
-    public PlanStepEntity withSetName(String name){
-        PlanStepEntity ret = new PlanStepEntity(this);
-        ret.name = name;
-        return ret;
     }
 
     public String getDescription() {

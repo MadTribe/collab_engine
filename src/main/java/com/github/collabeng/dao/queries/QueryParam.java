@@ -1,4 +1,4 @@
-package com.github.collabeng.dao.util;
+package com.github.collabeng.dao.queries;
 
 /**
  * Created by paul.smout on 26/01/2015.

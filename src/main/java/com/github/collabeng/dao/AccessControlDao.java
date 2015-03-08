@@ -4,14 +4,15 @@ package com.github.collabeng.dao;
  * Created by paul.smout on 26/01/2015.
  */
 
-import com.github.collabeng.dao.util.QueryParam;
+import com.github.collabeng.dao.queries.QueryParam;
 import com.github.collabeng.domain.OwnedEntity;
-import com.github.collabeng.domain.PlanEntity;
 import com.github.collabeng.domain.UserEntity;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
+import com.google.inject.servlet.RequestScoped;
 
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +24,7 @@ import static com.github.collabeng.constants.Names.CURRENT_USER_ENTITY;
 import static com.google.common.collect.Lists.asList;
 import static java.lang.String.format;
 
-
+@RequestScoped
 public abstract class AccessControlDao<T extends OwnedEntity> extends BaseDao<T> {
 
     private static final Logger LOG = Logger.getLogger(AccessControlDao.class.getName());
@@ -34,7 +35,7 @@ public abstract class AccessControlDao<T extends OwnedEntity> extends BaseDao<T>
 
     // TODO add in access controlled versions of super methods
     // TODO listAll should add current owner as where criteria. [t:1h]
-    // TODO work out how to share query criteria between this and BaseDao (Decorator maybe)
+    // TODO work out how to share queryOne criteria between this and BaseDao (Decorator maybe)
     // TODO this class should insert owner on create, rather than the service layer.
 
 
@@ -45,28 +46,25 @@ public abstract class AccessControlDao<T extends OwnedEntity> extends BaseDao<T>
 
     @Override
     public List<T> findAll() {
-        return super.findAll();
+        return query("select o from " + getEntityClass().getCanonicalName() + " o where o.owner = :currentUser ", param("currentUser", currentUser.get())).getResultList();
     }
 
     @Override
-    protected TypedQuery<T> query(String queryStr) {
-        return super.query(queryStr);
-    }
-
-    @Override
-    protected Optional<T> query(String queryStr, QueryParam<?> param, QueryParam<?>... params) {
+    protected TypedQuery<T> query(String queryStr,  QueryParam<? extends Object> param, QueryParam<? extends Object>... params ) {
         return super.query(queryStr, param, params);
     }
+
+    @Override
+    protected Optional<T> queryOne(String queryStr, QueryParam<?> param, QueryParam<?>... params) {
+         return null;
+    }
+
 
     @Override
     public T persist(T entity) {
         return super.persist((T)entity.withOwner(currentUser.get()));
     }
 
-    @Override
-    public void flush() {
-        super.flush();
-    }
 
     @Override
     public void persist(Iterable<T> entities) {
@@ -87,6 +85,13 @@ public abstract class AccessControlDao<T extends OwnedEntity> extends BaseDao<T>
         super.remove(entity);
     }
 
+
+    @Override
+    public void removeAll() {
+        Query query = getEntityManager().createQuery("delete from " + getEntityClass().getCanonicalName() + " o where o.owner = :currentUser ");
+        query.setParameter("currentUser",currentUser.get());
+        query.executeUpdate();
+    }
 
     @Override
     public long count() {

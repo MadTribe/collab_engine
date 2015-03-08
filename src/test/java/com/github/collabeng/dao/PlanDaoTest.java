@@ -24,10 +24,10 @@ public class PlanDaoTest extends BaseDaoTest {
 
         setCurrentUser(userEntity);
 
-        planDao.persist(new PlanEntity(null,"name1","desc1"));
-        planDao.persist(new PlanEntity(null,"name2","desc1"));
-        planDao.persist(new PlanEntity(null,"name3","desc1"));
-        planDao.persist(new PlanEntity(null,"name4","desc1"));
+        planDao.persist(new PlanEntity("name1","desc1"));
+        planDao.persist(new PlanEntity("name2","desc1"));
+        planDao.persist(new PlanEntity("name3","desc1"));
+        planDao.persist(new PlanEntity("name4","desc1"));
 
 
         final List<PlanEntity> plans = planDao.findAll();
@@ -50,7 +50,7 @@ public class PlanDaoTest extends BaseDaoTest {
 
         setCurrentUser(userEntity);
 
-        PlanEntity planEntity = planDao.persist(new PlanEntity(userEntity,"name1","desc1"));
+        PlanEntity planEntity = planDao.persist(new PlanEntity("name1","desc1"));
 
         assertThat(planDao.count(),is(1L));
 
@@ -72,8 +72,11 @@ public class PlanDaoTest extends BaseDaoTest {
         assertThat(result.get().getVersion(), equalTo(4L));
         assertThat(result.get().getOwner(), equalTo(userEntity));
 
-        System.err.println("" + result);
 
+
+        planDao.removeAll();
+
+        assertThat(planDao.count(),is(0L));
 
     }
 }

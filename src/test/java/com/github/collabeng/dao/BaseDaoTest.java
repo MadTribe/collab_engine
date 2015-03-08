@@ -30,7 +30,6 @@ public class BaseDaoTest {
 
     @Before
     public void setUp() throws Exception {
-        System.out.println(">>>>> BaseDao Setup");
         synchronized (this) {
             if (injector == null) {
                 injector = Guice.createInjector(new JpaPersistModule("utPersistenceUnit"), new TestConfigModule());

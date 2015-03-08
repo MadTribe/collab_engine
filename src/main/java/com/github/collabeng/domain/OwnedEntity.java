@@ -17,16 +17,6 @@ public class OwnedEntity extends BaseEntity {
     }
 
 
-
-    public OwnedEntity(UserEntity owner) {
-        this.owner = owner;
-    }
-
-    public OwnedEntity(OwnedEntity ownedEntity) {
-        super(ownedEntity);
-        this.owner = ownedEntity.owner;
-    }
-
     public UserEntity getOwner() {
         return owner;
     }

@@ -17,29 +17,19 @@ public class PlanEntity extends OwnedEntity {
     @Column(name = "DESCRIPTION")
     private String description;
 
+
+
+
     private PlanEntity() {
     }
 
-    public PlanEntity( UserEntity owner, String name, String description) {
-        super(owner);
+    public PlanEntity( String name, String description) {
+        super();
         this.name = name;
         this.description = description;
     }
 
-    public PlanEntity(PlanEntity planEntity) {
-        super(planEntity);
-        this.name = planEntity.name;
-        this.description = planEntity.description;
-    }
 
-    public String getName() {
-        return name;
-    }
-    public PlanEntity withName(String name){
-        PlanEntity ret = new PlanEntity(this);
-        ret.name = name;
-        return ret;
-    }
 
     public String getDescription() {
         return description;
@@ -51,5 +41,15 @@ public class PlanEntity extends OwnedEntity {
         return "" + super.toString() +
                 "name='" + name + '\'' +
                 ", description='" + description;
+    }
+
+    public PlanEntity withName(String name) {
+        PlanEntity ret = (PlanEntity)copy();
+        ret.name = name;
+        return ret;
+    }
+
+    public String getName() {
+        return name;
     }
 }

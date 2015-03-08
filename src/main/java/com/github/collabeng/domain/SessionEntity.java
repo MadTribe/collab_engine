@@ -40,38 +40,4 @@ public class SessionEntity extends BaseEntity {
                 '}';
     }
 
-    public static class Builder extends BaseEntity.Builder{
-
-        protected Builder(){
-            this.entity = new OwnedEntity();
-        }
-
-        private Builder buildFrom(SessionEntity ownedEntity) {
-            super.buildFrom(ownedEntity);
-            ((SessionEntity)entity).key = ownedEntity.key;
-            ((SessionEntity)entity).user = ownedEntity.user;
-            return this;
-        }
-
-        public SessionEntity.Builder key(String key){
-            ((SessionEntity)entity).key = key;
-            return this;
-        }
-
-        public SessionEntity.Builder user(UserEntity user){
-            ((SessionEntity)entity).user = user;
-            return this;
-
-        }
-
-        SessionEntity value(){
-            return (SessionEntity)entity;
-        }
-
-    }
-
-
-    public Builder builder() {
-        return new Builder().buildFrom(new SessionEntity());
-    }
 }

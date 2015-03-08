@@ -4,18 +4,16 @@ package com.github.collabeng.dao;
  * Created by paul.smout on 26/01/2015.
  */
 
-import com.github.collabeng.dao.util.QueryParam;
+import com.github.collabeng.dao.queries.QueryParam;
 import com.github.collabeng.domain.BaseEntity;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Optional;
@@ -67,11 +65,13 @@ public abstract class BaseDao<T extends BaseEntity> {
         return getEntityManager().createQuery(query).getResultList();
     }
 
-    protected javax.persistence.TypedQuery<T> query(String queryStr) {
-        return getEntityManager().createQuery(queryStr, entityClass);
+    protected javax.persistence.TypedQuery<T> query(String queryStr, QueryParam<? extends Object> param, QueryParam<? extends Object>... params) {
+        final TypedQuery<T> query = getEntityManager().createQuery(queryStr, entityClass);
+        asList(param, params).stream().forEach(oneParam -> query.setParameter(oneParam.getName(), oneParam.getValue()));
+        return query;
     }
 
-    protected Optional<T> query(String queryStr, QueryParam<? extends Object> param, QueryParam<? extends Object>... params) {
+    protected Optional<T> queryOne(String queryStr, QueryParam<? extends Object> param, QueryParam<? extends Object>... params) {
         final TypedQuery<T> query = getEntityManager().createQuery(queryStr, entityClass);
         asList(param, params).stream().forEach(oneParam -> query.setParameter(oneParam.getName(), oneParam.getValue()));
         final List<T> resultList = query.getResultList();
@@ -130,7 +130,7 @@ public abstract class BaseDao<T extends BaseEntity> {
 
     }
 
-    protected QueryParam<T> param(String name, T value){
+    protected <V> QueryParam<V> param(String name,V value){
         return new QueryParam<>(name,value);
     }
 }
