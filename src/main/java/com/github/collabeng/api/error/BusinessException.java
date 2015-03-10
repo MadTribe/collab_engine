@@ -5,7 +5,7 @@ import javax.ws.rs.core.Response;
 /**
  * Created by paul.smout on 08/03/2015.
  */
-public class BusinessException extends Exception{
+public class BusinessException extends RuntimeException {
     public Response.Status getHttpCode() {
         return Response.Status.BAD_REQUEST;
     }

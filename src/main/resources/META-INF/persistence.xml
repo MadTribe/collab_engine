@@ -7,6 +7,7 @@
     <persistence-unit name="persistenceUnit" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>com.github.collabeng.domain.PlanEntity</class>
+        <class>com.github.collabeng.domain.PlanStepEntity</class>
         <class>com.github.collabeng.domain.UserEntity</class>
         <class>com.github.collabeng.domain.SessionEntity</class>
         <class>com.github.collabeng.domain.OwnedEntity</class>

@@ -11,7 +11,9 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.name.Named;
 import com.google.inject.servlet.RequestScoped;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ import java.util.logging.Logger;
 
 import static com.github.collabeng.constants.Names.CURRENT_USER_ENTITY;
 import static com.google.common.collect.Lists.asList;
+import static com.google.common.collect.Lists.transform;
 import static java.lang.String.format;
 
 @RequestScoped
@@ -49,14 +52,22 @@ public abstract class AccessControlDao<T extends OwnedEntity> extends BaseDao<T>
         return query("select o from " + getEntityClass().getCanonicalName() + " o where o.owner = :currentUser ", param("currentUser", currentUser.get())).getResultList();
     }
 
-    @Override
-    protected TypedQuery<T> query(String queryStr,  QueryParam<? extends Object> param, QueryParam<? extends Object>... params ) {
-        return super.query(queryStr, param, params);
-    }
+
 
     @Override
     protected Optional<T> queryOne(String queryStr, QueryParam<?> param, QueryParam<?>... params) {
-         return null;
+        Optional<T> ret = Optional.empty();
+        try {
+            TypedQuery<T> query = getEntityManager().createQuery("select o from " + getEntityClass().getCanonicalName() + " o where o.owner = :currentUser and " + queryStr, getEntityClass());
+
+            query.setParameter("currentUser",currentUser.get());
+            asList(param, params).stream().forEach(oneParam -> query.setParameter(oneParam.getName(), oneParam.getValue()));
+            ret = Optional.of(query.getSingleResult());
+        } catch (PersistenceException e){
+            LOG.severe("Error Retrieving Row");
+        }
+
+        return ret;
     }
 
 

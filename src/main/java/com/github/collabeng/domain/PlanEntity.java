@@ -1,10 +1,11 @@
 package com.github.collabeng.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import org.hibernate.annotations.BatchSize;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by paul.smout on 26/01/2015.
@@ -18,6 +19,10 @@ public class PlanEntity extends OwnedEntity {
     private String description;
 
 
+    @OneToMany(mappedBy = "owningPlan")
+    @OrderBy("createdAt DESC")
+    @BatchSize(size = 10)
+    private List<PlanStepEntity> steps = new ArrayList<>();;
 
 
     private PlanEntity() {
@@ -29,7 +34,9 @@ public class PlanEntity extends OwnedEntity {
         this.description = description;
     }
 
-
+    public List<PlanStepEntity> getSteps() {
+        return steps;
+    }
 
     public String getDescription() {
         return description;

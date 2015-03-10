@@ -1,5 +1,8 @@
 package com.github.collabeng.api;
 
+import com.github.collabeng.api.dto.PlanDto;
+import com.github.collabeng.api.dto.PlanSummaryDto;
+import com.github.collabeng.api.error.PlanNotFoundException;
 import com.github.collabeng.api.error.UnknownPlanException;
 import com.github.collabeng.api.requests.NewPlanRequest;
 import com.github.collabeng.api.requests.NewPlanStepRequest;
@@ -14,6 +17,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 import static java.util.stream.Collectors.toList;
@@ -28,9 +33,18 @@ public class PlanResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<PlanEntity> list(@Context HttpServletRequest request) {
-        final List<PlanEntity> collect = planService.listAll();
+    public List<PlanSummaryDto> list(@Context HttpServletRequest request) {
+        final List<PlanSummaryDto> collect = planService.listAll();
         return collect;
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{planId}")
+    public PlanDto get(@Context HttpServletRequest request,
+                                 @PathParam("planId") long planId) {
+        final Optional<PlanDto> collect = planService.getPlan(planId);
+        return collect.orElseThrow(() -> new PlanNotFoundException((int) planId));
     }
 
     @POST
