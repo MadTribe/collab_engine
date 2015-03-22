@@ -17,6 +17,14 @@ public class NewPlanRequest {
         return description;
     }
 
+    public NewPlanRequest() {
+    }
+
+    public NewPlanRequest(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
     @Override
     public String toString() {
         return "NewPlanRequest{" +

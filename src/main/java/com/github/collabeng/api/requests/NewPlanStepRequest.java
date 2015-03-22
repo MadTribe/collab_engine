@@ -13,6 +13,15 @@ public class NewPlanStepRequest {
     @NotNull
     private Long planId;
 
+    public NewPlanStepRequest() {
+    }
+
+    public NewPlanStepRequest(String name, String description, Long planId) {
+        this.name = name;
+        this.description = description;
+        this.planId = planId;
+    }
+
     public String getName() {
         return name;
     }

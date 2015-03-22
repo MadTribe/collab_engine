@@ -22,7 +22,7 @@ public class PlanEntity extends OwnedEntity {
     @OneToMany(mappedBy = "owningPlan")
     @OrderBy("createdAt DESC")
     @BatchSize(size = 10)
-    private List<PlanStepEntity> steps = new ArrayList<>();;
+    private List<PlanStepEntity> steps = new ArrayList<>();
 
 
     private PlanEntity() {

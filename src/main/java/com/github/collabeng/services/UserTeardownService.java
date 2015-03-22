@@ -2,6 +2,7 @@ package com.github.collabeng.services;
 
 import com.github.collabeng.dao.PlanDao;
 import com.github.collabeng.dao.PlanStepDao;
+import com.github.collabeng.dao.PlanStepEventDao;
 import com.github.collabeng.dao.SessionDao;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -20,15 +21,19 @@ public class UserTeardownService {
     @Inject
     private PlanStepDao planStepDao;
 
+    @Inject
+    private PlanStepEventDao planStepEventDao;
+
+
 
     @Inject
     private SessionDao sessionDao;
 
     @Transactional
     public void clearPersonalData(){
-
-        this.planStepDao.removeAll();
-        this.planDao.removeAll();
+        planStepEventDao.removeAll();
+        planStepDao.removeAll();
+        planDao.removeAll();
 
     }
 

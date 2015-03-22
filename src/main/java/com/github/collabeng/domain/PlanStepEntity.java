@@ -1,10 +1,11 @@
 package com.github.collabeng.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import org.hibernate.annotations.BatchSize;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by paul.smout on 26/01/2015.
@@ -22,6 +23,10 @@ public class PlanStepEntity extends OwnedEntity {
     @JoinColumn(name = "PLAN_ID")
     private PlanEntity owningPlan;
 
+    @OneToMany(mappedBy = "owningStep")
+    private List<PlanStepEventEntity> knownPossibleEvents = new ArrayList<>();;
+
+
     public PlanStepEntity() {
     }
 
@@ -37,5 +42,13 @@ public class PlanStepEntity extends OwnedEntity {
 
     public String getDescription() {
         return description;
+    }
+
+    public PlanEntity getOwningPlan() {
+        return owningPlan;
+    }
+
+    public List<PlanStepEventEntity> getKnownPossibleEvents() {
+        return knownPossibleEvents;
     }
 }

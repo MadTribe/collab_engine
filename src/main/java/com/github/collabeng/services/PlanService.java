@@ -4,38 +4,46 @@ import com.github.collabeng.api.dto.PlanDto;
 import com.github.collabeng.api.dto.PlanStepDto;
 import com.github.collabeng.api.dto.PlanSummaryDto;
 import com.github.collabeng.api.error.UnknownPlanException;
+import com.github.collabeng.api.error.UnknownPlanStepException;
 import com.github.collabeng.api.requests.NewPlanRequest;
 import com.github.collabeng.api.requests.NewPlanStepRequest;
+import com.github.collabeng.api.requests.NewStepEventRequest;
+import com.github.collabeng.api.responses.NewPlanStepResponse;
 import com.github.collabeng.dao.PlanDao;
 import com.github.collabeng.dao.PlanStepDao;
+import com.github.collabeng.dao.PlanStepEventDao;
 import com.github.collabeng.domain.PlanEntity;
 import com.github.collabeng.domain.PlanStepEntity;
-import com.github.collabeng.domain.UserEntity;
+import com.github.collabeng.domain.PlanStepEventEntity;
+import com.github.collabeng.eventvalidators.DefaultValidators;
 import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.google.inject.name.Named;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
-import sun.net.www.content.text.plain;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
-import static com.github.collabeng.constants.Names.CURRENT_USER_ENTITY;
 import static java.lang.String.format;
 
 @RequestScoped
 public class PlanService {
-    private static final Logger LOG = Logger.getLogger(PlanService.class.getName());
-
+    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     @Inject
     private PlanDao planDaoProvider;
 
     @Inject
     private PlanStepDao planStepDao;
+
+    @Inject
+    private PlanStepEventDao planStepEventDao;
+
+    public PlanService() {
+    }
 
     public List<PlanSummaryDto> listAll(){
         List<PlanSummaryDto> planSummaryDtos = new ArrayList<>();
@@ -68,14 +76,32 @@ public class PlanService {
     }
 
     @Transactional
-    public void createPlanStep(NewPlanStepRequest newPlanStep,
-                               long planId) throws UnknownPlanException {
+    public NewPlanStepResponse createPlanStep(NewPlanStepRequest newPlanStep,
+                                              long planId) throws UnknownPlanException {
         PlanEntity plan = planDaoProvider.find(planId).orElseThrow(() -> new UnknownPlanException(format("Plan with id %s either doesn't exist on not owned by this user","" + planId )));
 
         PlanStepEntity planStep = new PlanStepEntity(plan,newPlanStep.getName(),newPlanStep.getDescription());
 
-        planStepDao.persist(planStep);
+        planStep = planStepDao.persist(planStep);
+
+        return new NewPlanStepResponse(planStep.getId(),planStep.getCreatedAt());
     }
+
+
+    @Transactional
+    public void createStepEvent(NewStepEventRequest stepEventRequest){
+        PlanStepEntity owner = planStepDao.find(stepEventRequest.getPlanStepId()).orElseThrow(() -> new UnknownPlanStepException(stepEventRequest.getPlanStepId()));
+
+        PlanStepEntity next = planStepDao.find(stepEventRequest.getPlanStepId()).orElseThrow(() -> new UnknownPlanStepException(stepEventRequest.getNextStepId()));
+
+        String name = stepEventRequest.getName();
+
+        PlanStepEventEntity event = new PlanStepEventEntity(name, DefaultValidators.NULL.validatorClassName(), owner, next);
+
+        planStepEventDao.persist(event);
+    }
+
+
 
 
 }
