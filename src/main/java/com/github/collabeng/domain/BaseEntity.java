@@ -1,7 +1,5 @@
 package com.github.collabeng.domain;
 
-import com.google.inject.internal.util.$ToStringBuilder;
-
 import javax.persistence.*;
 import java.util.Date;
 

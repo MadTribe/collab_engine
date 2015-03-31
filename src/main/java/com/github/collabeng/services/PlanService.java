@@ -3,6 +3,7 @@ package com.github.collabeng.services;
 import com.github.collabeng.api.dto.PlanDto;
 import com.github.collabeng.api.dto.PlanStepDto;
 import com.github.collabeng.api.dto.PlanSummaryDto;
+import com.github.collabeng.api.error.PlanNotFoundException;
 import com.github.collabeng.api.error.UnknownPlanException;
 import com.github.collabeng.api.error.UnknownPlanStepException;
 import com.github.collabeng.api.requests.NewPlanRequest;
@@ -12,9 +13,8 @@ import com.github.collabeng.api.responses.NewPlanStepResponse;
 import com.github.collabeng.dao.PlanDao;
 import com.github.collabeng.dao.PlanStepDao;
 import com.github.collabeng.dao.PlanStepEventDao;
-import com.github.collabeng.domain.PlanEntity;
-import com.github.collabeng.domain.PlanStepEntity;
-import com.github.collabeng.domain.PlanStepEventEntity;
+import com.github.collabeng.dao.TaskDao;
+import com.github.collabeng.domain.*;
 import com.github.collabeng.eventvalidators.DefaultValidators;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -32,6 +32,9 @@ import static java.lang.String.format;
 @RequestScoped
 public class PlanService {
     private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+    @Inject
+    private TaskDao taskDao;
 
     @Inject
     private PlanDao planDaoProvider;
@@ -70,6 +73,7 @@ public class PlanService {
 
     @Transactional
     public void createPlan(NewPlanRequest newPlan) {
+        LOG.info("Creating plan ");
         PlanEntity plan = new PlanEntity(newPlan.getName(),
                                          newPlan.getDescription());
         planDaoProvider.persist(plan);
@@ -78,11 +82,16 @@ public class PlanService {
     @Transactional
     public NewPlanStepResponse createPlanStep(NewPlanStepRequest newPlanStep,
                                               long planId) throws UnknownPlanException {
+        LOG.error("Creating plan step for plan {}", planId);
         PlanEntity plan = planDaoProvider.find(planId).orElseThrow(() -> new UnknownPlanException(format("Plan with id %s either doesn't exist on not owned by this user","" + planId )));
 
         PlanStepEntity planStep = new PlanStepEntity(plan,newPlanStep.getName(),newPlanStep.getDescription());
-
         planStep = planStepDao.persist(planStep);
+
+        if ( plan.getSteps().size() == 1){
+            LOG.info("Adding first step {} to plan {}", newPlanStep, planId);
+            planDaoProvider.merge(plan.withFirstStep(planStep));
+        }
 
         return new NewPlanStepResponse(planStep.getId(),planStep.getCreatedAt());
     }
@@ -92,16 +101,26 @@ public class PlanService {
     public void createStepEvent(NewStepEventRequest stepEventRequest){
         PlanStepEntity owner = planStepDao.find(stepEventRequest.getPlanStepId()).orElseThrow(() -> new UnknownPlanStepException(stepEventRequest.getPlanStepId()));
 
-        PlanStepEntity next = planStepDao.find(stepEventRequest.getPlanStepId()).orElseThrow(() -> new UnknownPlanStepException(stepEventRequest.getNextStepId()));
-
+        PlanStepEntity next = null;
+LOG.info("Nest Step Id is {}",stepEventRequest.getNextStepId());
+        if (stepEventRequest.getNextStepId() != null){
+            next = planStepDao.find(stepEventRequest.getNextStepId()).orElseThrow(() -> new UnknownPlanStepException(stepEventRequest.getNextStepId()));
+        }
         String name = stepEventRequest.getName();
 
-        PlanStepEventEntity event = new PlanStepEventEntity(name, DefaultValidators.NULL.validatorClassName(), owner, next);
+        PlanStepEventEntity event = new PlanStepEventEntity(name, DefaultValidators.NULL.validatorClassName(), owner, next, TaskStatus.FINISHED);
 
         planStepEventDao.persist(event);
     }
 
+    @Transactional
+    public void beginPlan(Long id) {
+        PlanEntity planEntity =  planDaoProvider.find(id).orElseThrow(() -> new PlanNotFoundException(id));
+        PlanStepEntity step = planEntity.getFirstStep();
 
+        Task task = new Task(null, step, TaskStatus.IN_PROGRESS);
 
+        taskDao.persist(task);
 
+    }
 }

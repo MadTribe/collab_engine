@@ -24,6 +24,9 @@ public class PlanEntity extends OwnedEntity {
     @BatchSize(size = 10)
     private List<PlanStepEntity> steps = new ArrayList<>();
 
+    @OneToOne
+    private PlanStepEntity firstStep;
+
 
     private PlanEntity() {
     }
@@ -56,7 +59,18 @@ public class PlanEntity extends OwnedEntity {
         return ret;
     }
 
+    public PlanEntity withFirstStep(PlanStepEntity firstStep) {
+        PlanEntity ret = (PlanEntity)copy();
+        ret.firstStep = firstStep;
+        return ret;
+    }
+
     public String getName() {
         return name;
     }
+
+    public PlanStepEntity getFirstStep() {
+        return firstStep;
+    }
+
 }

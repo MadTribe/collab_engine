@@ -1,5 +1,6 @@
 package com.github.collabeng.domain;
 
+import javax.annotation.Nullable;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -24,17 +25,22 @@ public class PlanStepEventEntity extends OwnedEntity {
     private PlanStepEntity owningStep;
 
 
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "NEXT_STEP_ID")
     private PlanStepEntity nextStep;
 
 
-    public PlanStepEventEntity(String eventName, String eventValidator, PlanStepEntity owningStep, PlanStepEntity nextStep) {
+    private TaskStatus nextStatus;
+
+    public PlanStepEventEntity() {
+    }
+
+    public PlanStepEventEntity(String eventName, String eventValidator, PlanStepEntity owningStep, PlanStepEntity nextStep, TaskStatus nextStatus) {
         this.eventName = eventName;
         this.eventValidator = eventValidator;
         this.owningStep = owningStep;
         this.nextStep = nextStep;
+        this.nextStatus = nextStatus;
     }
 
     public String getEventName() {
@@ -51,5 +57,23 @@ public class PlanStepEventEntity extends OwnedEntity {
 
     public PlanStepEntity getNextStep() {
         return nextStep;
+    }
+
+    @Override
+    public String toString() {
+        return "PlanStepEventEntity{" +
+                "eventName='" + eventName + '\'' +
+                ", eventValidator='" + eventValidator + '\'' +
+                ", owningStep=" + owningStep +
+                ", nextStep=" + nextStep +
+                '}';
+    }
+
+    public TaskStatus getNextStatus() {
+        return nextStatus;
+    }
+
+    public void setNextStatus(TaskStatus nextStatus) {
+        this.nextStatus = nextStatus;
     }
 }

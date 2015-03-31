@@ -13,7 +13,8 @@
         <version.wechatapi>1.0.3-SNAPSHOT</version.wechatapi>
         <version.jdk>1.8</version.jdk>
         <version.h2>1.4.185</version.h2>
-        <version.guice>3.0</version.guice>
+       <version.guice>3.0</version.guice>
+      <!--  <version.guice>4.0-beta</version.guice> -->
         <version.jersey>1.18.3</version.jersey>
     </properties>
 

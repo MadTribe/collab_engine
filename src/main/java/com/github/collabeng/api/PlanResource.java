@@ -4,6 +4,7 @@ import com.github.collabeng.api.dto.PlanDto;
 import com.github.collabeng.api.dto.PlanSummaryDto;
 import com.github.collabeng.api.error.PlanNotFoundException;
 import com.github.collabeng.api.error.UnknownPlanException;
+import com.github.collabeng.api.requests.BeginPlanRequest;
 import com.github.collabeng.api.requests.NewPlanRequest;
 import com.github.collabeng.api.requests.NewPlanStepRequest;
 import com.github.collabeng.api.requests.NewStepEventRequest;
@@ -45,7 +46,7 @@ public class PlanResource {
     @Path("/{planId}")
     public PlanDto get(@PathParam("planId") long planId) {
         final Optional<PlanDto> collect = planService.getPlan(planId);
-        return collect.orElseThrow(() -> new PlanNotFoundException((int) planId));
+        return collect.orElseThrow(() -> new PlanNotFoundException( planId));
     }
 
     @POST
@@ -72,6 +73,15 @@ public class PlanResource {
     public Response createStep(NewStepEventRequest stepEventRequest) throws UnknownPlanException {
         LOG.info("Creating new plan step event " + stepEventRequest);
         planService.createStepEvent(stepEventRequest);
+        return Response.ok().build();
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("begin")
+    public Response beginPlan(BeginPlanRequest request) throws UnknownPlanException {
+        LOG.info("Beginning plan step event " + request.getId());
+        planService.beginPlan(request.getId());
         return Response.ok().build();
     }
 }

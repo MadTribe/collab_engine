@@ -1,9 +1,6 @@
 package com.github.collabeng.services;
 
-import com.github.collabeng.dao.PlanDao;
-import com.github.collabeng.dao.PlanStepDao;
-import com.github.collabeng.dao.PlanStepEventDao;
-import com.github.collabeng.dao.SessionDao;
+import com.github.collabeng.dao.*;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 
@@ -17,6 +14,9 @@ public class UserTeardownService {
     private static final Logger LOG = Logger.getLogger(UserTeardownService.class.getName());
 
     @Inject
+    private TaskDao taskDao;
+
+    @Inject
     private PlanDao planDao;
     @Inject
     private PlanStepDao planStepDao;
@@ -25,12 +25,13 @@ public class UserTeardownService {
     private PlanStepEventDao planStepEventDao;
 
 
-
     @Inject
     private SessionDao sessionDao;
 
     @Transactional
     public void clearPersonalData(){
+        taskDao.removeAll();
+        planDao.clearMyFirstSteps();
         planStepEventDao.removeAll();
         planStepDao.removeAll();
         planDao.removeAll();

@@ -8,16 +8,21 @@ import com.github.collabeng.dao.queries.QueryParam;
 import com.github.collabeng.domain.BaseEntity;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.persist.Transactional;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.ParameterizedType;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 import static com.google.common.collect.Lists.asList;
 import static java.lang.String.format;
@@ -26,12 +31,16 @@ import static java.util.Optional.*;
 
 public abstract class BaseDao<T extends BaseEntity> {
 
+
+
     @Inject
     private Provider<EntityManager> entityManager;
 
     private Class<T> entityClass;
 
-    private static final Logger LOG = Logger.getLogger(BaseDao.class.getName());
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+    public static final String ALIAS = "o";
 
     @SuppressWarnings("unchecked")
     public BaseDao() {
@@ -86,11 +95,17 @@ public abstract class BaseDao<T extends BaseEntity> {
         return entity;
     }
 
-    public void flush() {
-      //  getEntityManager();
-      //  getEntityManager().flush();
+    protected <Y> int nativeUpdate(final String updateClause, final String condition, Collection<QueryParam<Y>> params) {
+        String queryStr = "UPDATE " + getEntityClass().getSimpleName() + " " + ALIAS + " SET " + updateClause + " WHERE " + condition;
+        LOG.info("Running nativeUpdate: {} ", queryStr);
+        Query query = getEntityManager().createNativeQuery(queryStr,entityClass);
 
+        if (params != null) {
+            params.stream().forEach(oneParam -> query.setParameter(oneParam.getName(), oneParam.getValue()));
+        }
+        return query.executeUpdate();
     }
+
 
     public void persist(Iterable<T> entities) {
         for (T entity : entities) {

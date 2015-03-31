@@ -1,9 +1,6 @@
 package com.github.collabeng.injection;
 
-import com.github.collabeng.api.LoginResource;
-import com.github.collabeng.api.PlanResource;
-import com.github.collabeng.api.TeardownResource;
-import com.github.collabeng.api.UserIdentityFilter;
+import com.github.collabeng.api.*;
 import com.github.collabeng.api.error.DefaultBusinessExceptionMapper;
 import com.github.collabeng.domain.UserEntity;
 import com.google.inject.Inject;
@@ -42,9 +39,11 @@ public class AppServletModule extends ServletModule {
         for (Class<?> resource : resourceConfig.getClasses()) {
             bind(resource);
         }
+        bind(TaskResource.class);
         bind(PlanResource.class);
         bind(LoginResource.class);
         bind(TeardownResource.class);
+        bind(EventsResource.class);
 
         bind(DefaultBusinessExceptionMapper.class);
 
