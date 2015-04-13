@@ -1,20 +1,16 @@
 package com.github.collabeng.api;
 
-import com.github.collabeng.api.dto.TaskDto;
 import com.github.collabeng.api.requests.EventMessage;
+import com.github.collabeng.api.requests.NewEventParameter;
+import com.github.collabeng.api.responses.NewEntityResponse;
 import com.github.collabeng.services.EventsService;
-import com.github.collabeng.services.TaskService;
 import com.google.inject.Inject;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
 import java.util.logging.Logger;
 
 import static java.lang.String.format;
@@ -36,6 +32,15 @@ public class EventsResource {
         eventsService.handleTaskEvent(eventMessage);
 
         return Response.ok().build();
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{eventId}/params")
+    public NewEntityResponse createEventParameter(@Context HttpServletRequest request,
+                                         @PathParam("eventId") long eventId,
+                                         NewEventParameter newEventParameter) {
+        return eventsService.createEventParameter(eventId, newEventParameter);
     }
 
 

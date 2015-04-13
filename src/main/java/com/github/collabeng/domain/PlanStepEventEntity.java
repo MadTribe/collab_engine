@@ -6,6 +6,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by paul.smout on 13/03/2015.
@@ -28,6 +30,9 @@ public class PlanStepEventEntity extends OwnedEntity {
     @ManyToOne
     @JoinColumn(name = "NEXT_STEP_ID")
     private PlanStepEntity nextStep;
+
+    @OneToMany(mappedBy = "owningEvent")
+    private List<PlanStepEventParameter> parameters = new ArrayList<>();
 
 
     private TaskStatus nextStatus;
@@ -59,6 +64,10 @@ public class PlanStepEventEntity extends OwnedEntity {
         return nextStep;
     }
 
+    public List<PlanStepEventParameter> getParameters() {
+        return parameters;
+    }
+
     @Override
     public String toString() {
         return "PlanStepEventEntity{" +
@@ -73,7 +82,4 @@ public class PlanStepEventEntity extends OwnedEntity {
         return nextStatus;
     }
 
-    public void setNextStatus(TaskStatus nextStatus) {
-        this.nextStatus = nextStatus;
-    }
 }

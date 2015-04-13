@@ -9,7 +9,7 @@ import com.github.collabeng.api.error.UnknownPlanStepException;
 import com.github.collabeng.api.requests.NewPlanRequest;
 import com.github.collabeng.api.requests.NewPlanStepRequest;
 import com.github.collabeng.api.requests.NewStepEventRequest;
-import com.github.collabeng.api.responses.NewPlanStepResponse;
+import com.github.collabeng.api.responses.NewEntityResponse;
 import com.github.collabeng.dao.PlanDao;
 import com.github.collabeng.dao.PlanStepDao;
 import com.github.collabeng.dao.PlanStepEventDao;
@@ -72,15 +72,17 @@ public class PlanService {
 
 
     @Transactional
-    public void createPlan(NewPlanRequest newPlan) {
+    public NewEntityResponse createPlan(NewPlanRequest newPlan) {
         LOG.info("Creating plan ");
         PlanEntity plan = new PlanEntity(newPlan.getName(),
                                          newPlan.getDescription());
-        planDaoProvider.persist(plan);
+        plan = planDaoProvider.persist(plan);
+
+        return new NewEntityResponse(plan.getId());
     }
 
     @Transactional
-    public NewPlanStepResponse createPlanStep(NewPlanStepRequest newPlanStep,
+    public NewEntityResponse createPlanStep(NewPlanStepRequest newPlanStep,
                                               long planId) throws UnknownPlanException {
         LOG.error("Creating plan step for plan {}", planId);
         PlanEntity plan = planDaoProvider.find(planId).orElseThrow(() -> new UnknownPlanException(format("Plan with id %s either doesn't exist on not owned by this user","" + planId )));
@@ -93,16 +95,16 @@ public class PlanService {
             planDaoProvider.merge(plan.withFirstStep(planStep));
         }
 
-        return new NewPlanStepResponse(planStep.getId(),planStep.getCreatedAt());
+        return new NewEntityResponse(planStep.getId());
     }
 
 
     @Transactional
-    public void createStepEvent(NewStepEventRequest stepEventRequest){
+    public NewEntityResponse createStepEvent(NewStepEventRequest stepEventRequest){
         PlanStepEntity owner = planStepDao.find(stepEventRequest.getPlanStepId()).orElseThrow(() -> new UnknownPlanStepException(stepEventRequest.getPlanStepId()));
 
         PlanStepEntity next = null;
-LOG.info("Nest Step Id is {}",stepEventRequest.getNextStepId());
+        LOG.info("Nest Step Id is {}",stepEventRequest.getNextStepId());
         if (stepEventRequest.getNextStepId() != null){
             next = planStepDao.find(stepEventRequest.getNextStepId()).orElseThrow(() -> new UnknownPlanStepException(stepEventRequest.getNextStepId()));
         }
@@ -110,7 +112,9 @@ LOG.info("Nest Step Id is {}",stepEventRequest.getNextStepId());
 
         PlanStepEventEntity event = new PlanStepEventEntity(name, DefaultValidators.NULL.validatorClassName(), owner, next, TaskStatus.FINISHED);
 
-        planStepEventDao.persist(event);
+        event = planStepEventDao.persist(event);
+        return new NewEntityResponse(event.getId());
+
     }
 
     @Transactional

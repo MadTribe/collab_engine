@@ -5,20 +5,17 @@ import java.util.Date;
 /**
  * Created by paul.smout on 22/03/2015.
  */
-public class NewPlanStepResponse {
+public class NewEntityResponse extends BaseResponse {
     private final long id;
-    private final Date createdAt;
 
-    public NewPlanStepResponse(long id, Date createdAt) {
+
+    public NewEntityResponse(long id) {
         this.id = id;
-        this.createdAt = createdAt;
     }
 
     public long getId() {
         return id;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
+
 }

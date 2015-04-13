@@ -9,4 +9,8 @@ public class EventNotFoundException extends BusinessException{
     public EventNotFoundException(String name) {
         super(format("Event not found for task with name %s",name));
     }
+
+    public EventNotFoundException(Long id) {
+        super(format("Event not found with Id %d",id));
+    }
 }

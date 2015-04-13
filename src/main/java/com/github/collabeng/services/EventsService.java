@@ -4,12 +4,12 @@ import com.github.collabeng.api.error.EventNotFoundException;
 import com.github.collabeng.api.error.TaskEventValidationException;
 import com.github.collabeng.api.error.TaskNotFoundException;
 import com.github.collabeng.api.requests.EventMessage;
+import com.github.collabeng.api.requests.NewEventParameter;
+import com.github.collabeng.api.responses.NewEntityResponse;
 import com.github.collabeng.dao.PlanStepEventDao;
+import com.github.collabeng.dao.PlanStepEventParameterDao;
 import com.github.collabeng.dao.TaskDao;
-import com.github.collabeng.domain.PlanStepEntity;
-import com.github.collabeng.domain.PlanStepEventEntity;
-import com.github.collabeng.domain.Task;
-import com.github.collabeng.domain.TaskStatus;
+import com.github.collabeng.domain.*;
 import com.github.collabeng.eventvalidators.EventValidator;
 import com.google.inject.persist.Transactional;
 import org.slf4j.Logger;
@@ -35,8 +35,13 @@ public class EventsService {
     @Inject
     private PlanStepEventDao planStepEventDao;
 
+    @Inject
+    private PlanStepEventParameterDao planStepEventParameterDao;
+
     @Transactional
     public void handleTaskEvent(EventMessage eventMessage) {
+        LOG.info("Received Event: " + eventMessage);
+
         String name = eventMessage.getEventName();
         Long taskId = eventMessage.getTaskId();
 
@@ -46,13 +51,11 @@ public class EventsService {
 
         Optional<PlanStepEventEntity> matchingEvets = events.stream().filter((PlanStepEventEntity event) -> { return event.getEventName().equalsIgnoreCase(name);}).findFirst();
 
-        PlanStepEventEntity event = matchingEvets.orElseThrow(() -> {
-            return new EventNotFoundException(name);
-        });
+        PlanStepEventEntity event = matchingEvets.orElseThrow(() -> new EventNotFoundException(name));
         LOG.info("Found Matching Event " + event);
 
         try {
-            if (validateEvent(event)){
+            if (validateEvent(event, eventMessage)){
                 PlanStepEntity step = event.getNextStep();
                 if (step != null){
                     Task next = new Task(null, step, TaskStatus.IN_PROGRESS);
@@ -75,12 +78,25 @@ public class EventsService {
 
     }
 
-    private boolean validateEvent(PlanStepEventEntity event) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+    private boolean validateEvent(PlanStepEventEntity event, EventMessage eventMessage) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
 
         String validatorName = event.getEventValidator();
         Class<?> validatorClass = this.getClass().getClassLoader().loadClass(validatorName);
         EventValidator validator = (EventValidator) validatorClass.newInstance();
 
-        return validator.isValid(event);
+        return validator.isValid(event, eventMessage);
+    }
+
+    public NewEntityResponse createEventParameter(long eventId, NewEventParameter newEventParameter) {
+        PlanStepEventEntity event = planStepEventDao.find(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
+
+        PlanStepEventParameter param = new PlanStepEventParameter(event, newEventParameter.getParamName(), newEventParameter.getType());
+
+        param = planStepEventParameterDao.persist(param);
+
+        event.getParameters().add(param);
+        planStepEventDao.merge(event);
+
+        return new NewEntityResponse(param.getId());
     }
 }

@@ -36,7 +36,7 @@ public class PlanServiceTest extends BaseServiceTest {
 
     @Test
     public void testCreatePlan() throws Exception {
-        instance =  get(PlanService.class);
+//        instance =  get(PlanService.class);
 //
 //
 //        final UserDao userDao = get(UserDao.class);
