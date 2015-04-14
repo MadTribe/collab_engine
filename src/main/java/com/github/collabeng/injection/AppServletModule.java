@@ -44,6 +44,7 @@ public class AppServletModule extends ServletModule {
         bind(LoginResource.class);
         bind(TeardownResource.class);
         bind(EventsResource.class);
+        bind(ScriptRunnerResource.class);
 
         bind(DefaultBusinessExceptionMapper.class);
 
