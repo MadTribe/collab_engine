@@ -7,7 +7,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by paul.smout on 13/03/2015.
@@ -32,7 +34,7 @@ public class PlanStepEventEntity extends OwnedEntity {
     private PlanStepEntity nextStep;
 
     @OneToMany(mappedBy = "owningEvent")
-    private List<PlanStepEventParameter> parameters = new ArrayList<>();
+    private Set<PlanStepEventParameter> parameters = new HashSet<>();
 
 
     private TaskStatus nextStatus;
@@ -64,7 +66,7 @@ public class PlanStepEventEntity extends OwnedEntity {
         return nextStep;
     }
 
-    public List<PlanStepEventParameter> getParameters() {
+    public Set<PlanStepEventParameter> getParameters() {
         return parameters;
     }
 

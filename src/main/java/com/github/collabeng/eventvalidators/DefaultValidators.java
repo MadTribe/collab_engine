@@ -4,7 +4,7 @@ package com.github.collabeng.eventvalidators;
  * Created by paul.smout on 17/03/2015.
  */
 public enum  DefaultValidators {
-    NULL(NullValidator.class);
+    NULL(NullValidator.class), PARAMETER(ParameterValidator.class);
 
     private Class clazz;
     DefaultValidators(Class clazz) {

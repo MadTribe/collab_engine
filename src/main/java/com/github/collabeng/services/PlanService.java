@@ -110,11 +110,24 @@ public class PlanService {
         }
         String name = stepEventRequest.getName();
 
-        PlanStepEventEntity event = new PlanStepEventEntity(name, DefaultValidators.NULL.validatorClassName(), owner, next, TaskStatus.FINISHED);
+        PlanStepEventEntity event = new PlanStepEventEntity(name, getEventValidator(stepEventRequest.getEventValidator()).validatorClassName(), owner, next, TaskStatus.FINISHED);
 
         event = planStepEventDao.persist(event);
         return new NewEntityResponse(event.getId());
 
+    }
+
+    private DefaultValidators getEventValidator(String name){
+        DefaultValidators ret = DefaultValidators.NULL;
+
+        try {
+            if (name != null){
+                ret = DefaultValidators.valueOf(name);
+            }
+        } catch (IllegalArgumentException iae){
+            LOG.error("Invalid validator type {} ", name);
+        }
+        return ret;
     }
 
     @Transactional

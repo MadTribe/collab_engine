@@ -22,6 +22,9 @@ public class PlanStepEventParameter extends OwnedEntity{
     private String paramName;
     private String type;
 
+    public PlanStepEventParameter() {
+    }
+
     public PlanStepEventParameter(PlanStepEventEntity owningEvent, String paramName, String type) {
         this.owningEvent = owningEvent;
         this.paramName = paramName;

@@ -87,6 +87,7 @@ public class EventsService {
         return validator.isValid(event, eventMessage);
     }
 
+    @Transactional
     public NewEntityResponse createEventParameter(long eventId, NewEventParameter newEventParameter) {
         PlanStepEventEntity event = planStepEventDao.find(eventId).orElseThrow(() -> new EventNotFoundException(eventId));
 
