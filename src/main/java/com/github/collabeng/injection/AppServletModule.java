@@ -2,6 +2,7 @@ package com.github.collabeng.injection;
 
 import com.github.collabeng.api.*;
 import com.github.collabeng.api.error.DefaultBusinessExceptionMapper;
+import com.github.collabeng.api.error.DefaultPersistenceExceptionMapper;
 import com.github.collabeng.domain.UserEntity;
 import com.google.inject.Inject;
 import com.google.inject.Key;
@@ -12,10 +13,8 @@ import com.google.inject.persist.PersistFilter;
 import com.google.inject.servlet.RequestScoped;
 import com.google.inject.servlet.ServletModule;
 import com.sun.jersey.api.core.PackagesResourceConfig;
-import com.sun.jersey.api.core.ResourceConfig;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
-import javax.servlet.FilterRegistration;
 import javax.servlet.http.HttpServletRequest;
 import java.util.logging.Logger;
 
@@ -44,10 +43,10 @@ public class AppServletModule extends ServletModule {
         bind(LoginResource.class);
         bind(TeardownResource.class);
         bind(EventsResource.class);
-        bind(ScriptRunnerResource.class);
+        bind(ScriptsResource.class);
 
         bind(DefaultBusinessExceptionMapper.class);
-
+        bind(DefaultPersistenceExceptionMapper.class);
 
         serve( "/*" ).with( GuiceContainer.class );
     }

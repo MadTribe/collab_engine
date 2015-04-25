@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
  * Created by paul.smout on 22/03/2015.
  */
 @Entity
-public class TaskContextParameter extends OwnedEntity{
+public class TaskContextParameter extends NamedOwnedEntity{
     @NotNull
     @ManyToOne
     @JoinColumn(name = "CONTEXT_ID")

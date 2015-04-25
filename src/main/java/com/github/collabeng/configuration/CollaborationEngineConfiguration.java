@@ -1,6 +1,7 @@
-package com.github.collabeng;
+package com.github.collabeng.configuration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mongodb.Mongo;
 import io.dropwizard.Configuration;
 import io.dropwizard.db.DataSourceFactory;
 
@@ -25,10 +26,19 @@ public class CollaborationEngineConfiguration extends Configuration {
     @JsonProperty
     private DataSourceFactory database;
 
+    @Valid
+    @NotNull
+    @JsonProperty
+    private MongoConfiguration mongoConfiguration;
+
+    public CollaborationEngineConfiguration() {
+    }
+
     public DataSourceFactory getDatabase() {
         return database;
     }
 
-
-
+    public MongoConfiguration getMongoConfiguration() {
+        return mongoConfiguration;
+    }
 }

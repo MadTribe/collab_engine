@@ -1,9 +1,8 @@
 package com.github.collabeng;
 
 import com.github.collabeng.api.DummyRootResource;
-import com.github.collabeng.api.LoginResource;
-import com.github.collabeng.api.PlanResource;
-import com.github.collabeng.api.UserIdentityFilter;
+import com.github.collabeng.api.error.DefaultBusinessExceptionMapper;
+import com.github.collabeng.configuration.CollaborationEngineConfiguration;
 import com.github.collabeng.injection.GuiceInitializer;
 import com.google.inject.servlet.GuiceFilter;
 import io.dropwizard.Application;
@@ -51,6 +50,7 @@ public class CollaborationEngineService extends Application<CollaborationEngineC
 
         // NB other filters and resources are set up in the Guice AppServletModule
         environment.jersey().register(guiceMain.get(DummyRootResource.class));
+        environment.jersey().register(DefaultBusinessExceptionMapper.class);
 
     }
 }

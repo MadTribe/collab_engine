@@ -11,4 +11,11 @@ public class BaseResponse {
     public long getServerTime() {
         return serverTime;
     }
+
+    @Override
+    public String toString() {
+        return "BaseResponse{" +
+                "serverTime=" + serverTime +
+                '}';
+    }
 }

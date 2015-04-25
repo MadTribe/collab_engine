@@ -84,6 +84,12 @@ public abstract class BaseEntity implements Cloneable {
         return ret;
     }
 
+    public BaseEntity withId(Long id) {
+        BaseEntity ret = copy();
+        ret.id = id;
+        return ret;
+    }
+
     public long getId() {
         return id;
     }

@@ -1,5 +1,6 @@
 package com.github.collabeng.domain;
 
+import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 import java.util.Date;

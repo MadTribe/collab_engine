@@ -3,17 +3,15 @@ package com.github.collabeng.services;
 import com.github.collabeng.api.dto.PlanDto;
 import com.github.collabeng.api.dto.PlanStepDto;
 import com.github.collabeng.api.dto.PlanSummaryDto;
-import com.github.collabeng.api.error.PlanNotFoundException;
+import com.github.collabeng.api.error.ItemNotFoundException;
 import com.github.collabeng.api.error.UnknownPlanException;
 import com.github.collabeng.api.error.UnknownPlanStepException;
+import com.github.collabeng.api.error.UnknownScriptException;
 import com.github.collabeng.api.requests.NewPlanRequest;
 import com.github.collabeng.api.requests.NewPlanStepRequest;
 import com.github.collabeng.api.requests.NewStepEventRequest;
 import com.github.collabeng.api.responses.NewEntityResponse;
-import com.github.collabeng.dao.PlanDao;
-import com.github.collabeng.dao.PlanStepDao;
-import com.github.collabeng.dao.PlanStepEventDao;
-import com.github.collabeng.dao.TaskDao;
+import com.github.collabeng.dao.*;
 import com.github.collabeng.domain.*;
 import com.github.collabeng.eventvalidators.DefaultValidators;
 import com.google.inject.Inject;
@@ -41,6 +39,9 @@ public class PlanService {
 
     @Inject
     private PlanStepDao planStepDao;
+
+    @Inject
+    private ScriptDao scriptDao;
 
     @Inject
     private PlanStepEventDao planStepEventDao;
@@ -110,7 +111,12 @@ public class PlanService {
         }
         String name = stepEventRequest.getName();
 
-        PlanStepEventEntity event = new PlanStepEventEntity(name, getEventValidator(stepEventRequest.getEventValidator()).validatorClassName(), owner, next, TaskStatus.FINISHED);
+        Script eventHandler = null;
+        if (stepEventRequest.getHandlerName() != null && !stepEventRequest.getHandlerName().isEmpty()){
+            eventHandler = scriptDao.findByName(stepEventRequest.getHandlerName()).orElseThrow(() -> new UnknownScriptException(stepEventRequest.getHandlerName()));
+        }
+
+        PlanStepEventEntity event = new PlanStepEventEntity(name, getEventValidator(stepEventRequest.getEventValidator()).validatorClassName(), eventHandler, owner, next, TaskStatus.FINISHED);
 
         event = planStepEventDao.persist(event);
         return new NewEntityResponse(event.getId());
@@ -132,7 +138,7 @@ public class PlanService {
 
     @Transactional
     public void beginPlan(Long id) {
-        PlanEntity planEntity =  planDaoProvider.find(id).orElseThrow(() -> new PlanNotFoundException(id));
+        PlanEntity planEntity =  planDaoProvider.find(id).orElseThrow(() -> new ItemNotFoundException("Plan", id));
         PlanStepEntity step = planEntity.getFirstStep();
 
         Task task = new Task(null, step, TaskStatus.IN_PROGRESS);

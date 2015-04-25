@@ -25,6 +25,9 @@ public class UserTeardownService {
     private PlanStepEventDao planStepEventDao;
 
     @Inject
+    private ScriptDao scriptDao;
+
+    @Inject
     private PlanStepEventParameterDao planStepEventParameterDao;
 
     @Inject
@@ -33,9 +36,11 @@ public class UserTeardownService {
     @Transactional
     public void clearPersonalData(){
         taskDao.removeAll();
+
         planStepEventParameterDao.removeAll();
         planDao.clearMyFirstSteps();
         planStepEventDao.removeAll();
+        scriptDao.removeAll();
         planStepDao.removeAll();
         planDao.removeAll();
 

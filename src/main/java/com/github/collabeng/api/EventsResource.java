@@ -2,6 +2,7 @@ package com.github.collabeng.api;
 
 import com.github.collabeng.api.requests.EventMessage;
 import com.github.collabeng.api.requests.NewEventParameter;
+import com.github.collabeng.api.responses.BaseResponse;
 import com.github.collabeng.api.responses.NewEntityResponse;
 import com.github.collabeng.services.EventsService;
 import com.google.inject.Inject;
@@ -26,12 +27,13 @@ public class EventsResource {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Path("task")
-    public Response taskEventReceived(@Context HttpServletRequest request,
-                                  EventMessage eventMessage) {
+    public BaseResponse taskEventReceived(@Context HttpServletRequest request,
+                                          EventMessage eventMessage) {
         LOG.info(format("Event Received %s",request.toString()));
-        eventsService.handleTaskEvent(eventMessage);
+        BaseResponse response = eventsService.handleTaskEvent(eventMessage);
 
-        return Response.ok().build();
+        LOG.info(response.toString());
+        return response;
     }
 
     @POST

@@ -7,7 +7,7 @@ import static java.util.Arrays.asList;
 /**
  * Created by paul.smout on 26/01/2015.
  */
-public class PlanDao extends AccessControlDao<PlanEntity> {
+public class PlanDao extends NamedOwnedDao<PlanEntity> {
 
     public void clearMyFirstSteps(){
 

@@ -2,7 +2,7 @@ package com.github.collabeng.api;
 
 import com.github.collabeng.api.dto.PlanDto;
 import com.github.collabeng.api.dto.PlanSummaryDto;
-import com.github.collabeng.api.error.PlanNotFoundException;
+import com.github.collabeng.api.error.ItemNotFoundException;
 import com.github.collabeng.api.error.UnknownPlanException;
 import com.github.collabeng.api.requests.BeginPlanRequest;
 import com.github.collabeng.api.requests.NewPlanRequest;
@@ -41,7 +41,7 @@ public class PlanResource {
     @Path("/{planId}")
     public PlanDto readPlan(@PathParam("planId") long planId) {
         final Optional<PlanDto> collect = planService.getPlan(planId);
-        return collect.orElseThrow(() -> new PlanNotFoundException( planId));
+        return collect.orElseThrow(() -> new ItemNotFoundException("Plan", planId));
     }
 
     @POST

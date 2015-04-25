@@ -23,6 +23,10 @@ public class PlanStepEventEntity extends OwnedEntity {
     @NotNull
     private String eventValidator;
 
+    @ManyToOne
+    @JoinColumn(name = "SCRIPT_ID")
+    private Script eventHandler;
+
     @NotNull
     @ManyToOne
     @JoinColumn(name = "STEP_ID")
@@ -42,9 +46,15 @@ public class PlanStepEventEntity extends OwnedEntity {
     public PlanStepEventEntity() {
     }
 
-    public PlanStepEventEntity(String eventName, String eventValidator, PlanStepEntity owningStep, PlanStepEntity nextStep, TaskStatus nextStatus) {
+    public Script getEventHandler() {
+        return eventHandler;
+    }
+
+    public PlanStepEventEntity(String eventName, String eventValidator, Script eventHandler, PlanStepEntity owningStep, PlanStepEntity nextStep, TaskStatus nextStatus) {
         this.eventName = eventName;
         this.eventValidator = eventValidator;
+        this.eventHandler = eventHandler;
+
         this.owningStep = owningStep;
         this.nextStep = nextStep;
         this.nextStatus = nextStatus;

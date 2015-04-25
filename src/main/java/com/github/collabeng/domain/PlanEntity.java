@@ -1,5 +1,6 @@
 package com.github.collabeng.domain;
 
+import com.google.inject.name.Named;
 import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
@@ -11,9 +12,9 @@ import java.util.List;
  * Created by paul.smout on 26/01/2015.
  */
 @Entity
-public class PlanEntity extends OwnedEntity {
-    @Column(name = "NAME")
-    private String name;
+@Table(uniqueConstraints= @UniqueConstraint(columnNames={"NAME", "owner_ID"}))
+public class PlanEntity extends NamedOwnedEntity {
+
 
     @Column(name = "DESCRIPTION")
     private String description;
@@ -32,8 +33,7 @@ public class PlanEntity extends OwnedEntity {
     }
 
     public PlanEntity( String name, String description) {
-        super();
-        this.name = name;
+        super(name);
         this.description = description;
     }
 
@@ -49,7 +49,7 @@ public class PlanEntity extends OwnedEntity {
     @Override
     public String toString() {
         return "" + super.toString() +
-                "name='" + name + '\'' +
+                "name='" + getName() + '\'' +
                 ", description='" + description;
     }
 
@@ -63,10 +63,6 @@ public class PlanEntity extends OwnedEntity {
         PlanEntity ret = (PlanEntity)copy();
         ret.firstStep = firstStep;
         return ret;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public PlanStepEntity getFirstStep() {

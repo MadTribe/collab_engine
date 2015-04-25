@@ -1,7 +1,7 @@
 package com.github.collabeng.injection;
 
 
-import com.github.collabeng.CollaborationEngineConfiguration;
+import com.github.collabeng.configuration.CollaborationEngineConfiguration;
 import com.google.inject.AbstractModule;
 import com.google.inject.Injector;
 

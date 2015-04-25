@@ -1,5 +1,9 @@
 systemLocale: zh_CN
 
+mongoConfiguration:
+  serverAddress: localhost
+  port: 27017
+
 database:
   driverClass: com.mysql.jdbc.Driver
   user: root

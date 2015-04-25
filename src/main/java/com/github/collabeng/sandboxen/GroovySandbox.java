@@ -1,12 +1,10 @@
 package com.github.collabeng.sandboxen;
 
+import com.github.collabeng.api.error.ScriptException;
 import groovy.lang.Binding;
-import groovy.lang.Closure;
 import groovy.lang.GroovyShell;
-import groovy.lang.Script;
 import org.codehaus.groovy.control.CompilerConfiguration;
 import org.codehaus.groovy.control.customizers.ImportCustomizer;
-import org.codehaus.groovy.control.customizers.SecureASTCustomizer;
 import org.kohsuke.groovy.sandbox.GroovyValueFilter;
 import org.kohsuke.groovy.sandbox.SandboxTransformer;
 
@@ -26,7 +24,7 @@ public class GroovySandbox {
         allowedTypes.add(String.class);
     }
 
-    public String scriptRunner(final String script, final String query) {
+    public String scriptRunner(final String script, final Object api, GroovyValueFilter valueFilter) {
         final ImportCustomizer imports = new ImportCustomizer();
         imports.addStaticStars("java.lang.Math");
 
@@ -35,19 +33,21 @@ public class GroovySandbox {
         config.addCompilationCustomizers(imports, new SandboxTransformer());
 
         final Binding intBinding = new Binding(); // alow parameters in the script
-        intBinding.setVariable("query", query);
+        intBinding.setVariable("api", api);
 
         final GroovyShell shell = new GroovyShell(intBinding, config); // create shall
 
         // code execution
-        final Object clos = shell.evaluate(script);
+        Object clos = null;
 
-        RobotSandbox sandbox = new RobotSandbox();
-        sandbox.register();
+
+        valueFilter.register();
         try {
-            shell.evaluate(script);
+            clos = shell.evaluate(script);
+        } catch (RuntimeException e){
+            throw new ScriptException("Error Running Script", e);
         } finally {
-            sandbox.unregister();
+            valueFilter.unregister();
         }
 
         if (clos == null) {
@@ -56,18 +56,7 @@ public class GroovySandbox {
         return clos.toString();
     }
 
-    class RobotSandbox extends GroovyValueFilter {
-        @Override
-        public Object filter(Object o) {
-            if (o==null || allowedTypes.contains(o.getClass())){
-                return o;
-            }
-            if (o instanceof Script || o instanceof Closure){
-                return o; // access to properties of compiled groovy script
-            }
-            throw new SecurityException("Oops, unexpected type: " + o.getClass());
-        }
-
-
+    public Set<Class> getAllowedTypes() {
+        return allowedTypes;
     }
 }

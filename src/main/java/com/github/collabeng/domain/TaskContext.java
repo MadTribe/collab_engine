@@ -13,8 +13,11 @@ import java.util.List;
  */
 @Entity
 public class TaskContext extends OwnedEntity {
+
     @OneToMany(mappedBy = "owningContext")
     private List<TaskContextParameter> parameters = new ArrayList<>();
 
-
+    public List<TaskContextParameter> getParameters() {
+        return parameters;
+    }
 }

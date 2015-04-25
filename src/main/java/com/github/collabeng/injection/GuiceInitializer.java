@@ -1,13 +1,10 @@
 package com.github.collabeng.injection;
 
-import com.github.collabeng.CollaborationEngineConfiguration;
+import com.github.collabeng.configuration.CollaborationEngineConfiguration;
 import com.google.inject.Guice;
-import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.google.inject.persist.PersistService;
 import com.google.inject.persist.jpa.JpaPersistModule;
 import com.google.inject.servlet.GuiceServletContextListener;
-import com.google.inject.servlet.ServletModule;
 import io.dropwizard.db.ManagedDataSource;
 import io.dropwizard.setup.Environment;
 import org.hibernate.jpa.HibernatePersistenceProvider;
@@ -58,6 +55,7 @@ public final class GuiceInitializer extends GuiceServletContextListener {
             new RuntimeException("Startup Failed Because Mysql not found ", e);
         }
 
+        MongoModule mongoModule = new MongoModule(configuration.getMongoConfiguration());
 
         JpaPersistModule persistModule = new JpaPersistModule(persistenceUnit);
         Properties connectionProperties = new Properties();
@@ -69,7 +67,7 @@ public final class GuiceInitializer extends GuiceServletContextListener {
 
 
         final CollaborationModule collaborationModule = new CollaborationModule(persistenceInjector, configuration);
-        instance = persistenceInjector.createChildInjector(collaborationModule).createChildInjector(new AppServletModule());
+        instance = persistenceInjector.createChildInjector(collaborationModule).createChildInjector(new AppServletModule()).createChildInjector(mongoModule);
     }
 
     @Override
