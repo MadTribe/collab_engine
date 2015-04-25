@@ -64,7 +64,7 @@ public class EventsService {
 
                 Script eventHandler = event.getEventHandler();
                 if (event.getEventHandler() != null ) {
-                    runEventHandler(eventHandler, task, event);
+                    runEventHandler(eventHandler, task, event, eventMessage);
                 }
 
                 PlanStepEntity step = event.getNextStep();
@@ -92,8 +92,8 @@ public class EventsService {
 
     }
 
-    private ScriptResponse runEventHandler(Script eventHandler, Task task, PlanStepEventEntity event) {
-        String resp = scriptService.runTaskEventHandler(eventHandler, task, event);
+    private ScriptResponse runEventHandler(Script eventHandler, Task task, PlanStepEventEntity event, EventMessage eventMessage) {
+        String resp = scriptService.runTaskEventHandler(eventHandler, task, event, eventMessage);
         return new ScriptResponse(resp);
     }
 

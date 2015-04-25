@@ -1,5 +1,7 @@
 package com.github.collabeng.sandboxen;
 
+import com.github.collabeng.domain.PlanStepEventEntity;
+import com.github.collabeng.domain.Task;
 import groovy.lang.Closure;
 import groovy.lang.Script;
 import org.kohsuke.groovy.sandbox.GroovyValueFilter;
@@ -20,6 +22,7 @@ public class TaskEventHandlerSandbox extends BasicSandbox {
         allowedTypes.add(HashMap.class);
         allowedTypes.add(PlanContext.class);
     }
+
 
 
 }

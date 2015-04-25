@@ -4,6 +4,7 @@ import com.github.collabeng.api.dto.NamedEntityDto;
 import com.github.collabeng.api.dto.ScriptDto;
 import com.github.collabeng.api.error.ItemNotFoundException;
 import com.github.collabeng.api.error.ScriptException;
+import com.github.collabeng.api.requests.EventMessage;
 import com.github.collabeng.api.requests.NewScriptRequest;
 import com.github.collabeng.api.requests.UpdateScriptRequest;
 import com.github.collabeng.api.responses.NamedEntityListResponse;
@@ -85,12 +86,12 @@ public class ScriptService {
         return new ScriptDto(script);
     }
 
-    public String runTaskEventHandler(Script eventHandler, Task task, PlanStepEventEntity event) {
+    public String runTaskEventHandler(Script eventHandler, Task task, PlanStepEventEntity eventDefinintion, EventMessage eventMessage) {
 
         contextService.getContextAPI(task);
 
         TaskEventHandlerSandbox basicSandbox = new TaskEventHandlerSandbox();
-        TaskEventHandlerAPI api = new TaskEventHandlerAPI();
+        TaskEventHandlerAPI api = new TaskEventHandlerAPI(eventDefinintion, task, eventMessage  );
 
         String resp = "";
 
