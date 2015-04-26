@@ -11,11 +11,9 @@ import com.github.collabeng.api.responses.NamedEntityListResponse;
 import com.github.collabeng.api.responses.NewEntityResponse;
 import com.github.collabeng.dao.ScriptDao;
 import com.github.collabeng.domain.*;
-import com.github.collabeng.sandboxen.BasicSandbox;
-import com.github.collabeng.sandboxen.GroovySandbox;
-import com.github.collabeng.sandboxen.TaskEventHandlerAPI;
-import com.github.collabeng.sandboxen.TaskEventHandlerSandbox;
+import com.github.collabeng.sandboxen.*;
 import com.google.inject.persist.Transactional;
+import com.mongodb.client.MongoDatabase;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
@@ -36,6 +34,9 @@ public class ScriptService {
 
     @Inject
     private ContextService contextService;
+
+    @Inject
+    private MongoDatabase mongoDatabase;
 
     @Transactional
     public NewEntityResponse createNewScript(NewScriptRequest newScriptRequest){
@@ -86,12 +87,20 @@ public class ScriptService {
         return new ScriptDto(script);
     }
 
-    public String runTaskEventHandler(Script eventHandler, Task task, PlanStepEventEntity eventDefinintion, EventMessage eventMessage) {
+    public String runTaskEventHandler(Script eventHandler,
+                                      Task task,
+                                      PlanStepEventEntity eventDefinintion,
+                                      EventMessage eventMessage) {
 
         contextService.getContextAPI(task);
 
+        PlanContext planContext = new PlanContext(mongoDatabase, task.getContext().getId());
+
         TaskEventHandlerSandbox basicSandbox = new TaskEventHandlerSandbox();
-        TaskEventHandlerAPI api = new TaskEventHandlerAPI(eventDefinintion, task, eventMessage  );
+        TaskEventHandlerAPI api = new TaskEventHandlerAPI(eventDefinintion,
+                                                          task,
+                                                          eventMessage,
+                                                          planContext);
 
         String resp = "";
 

@@ -70,7 +70,7 @@ public class EventsService {
                 PlanStepEntity step = event.getNextStep();
                 if (step != null){
 
-                    Task next = new Task(null, step, TaskStatus.IN_PROGRESS);
+                    Task next = new Task(task.getContext(), step, TaskStatus.IN_PROGRESS);
                     LOG.info("Creating new task " + next);
                     taskDao.persist(next);
                 } else {

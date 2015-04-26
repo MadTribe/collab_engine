@@ -67,7 +67,7 @@ public final class GuiceInitializer extends GuiceServletContextListener {
 
 
         final CollaborationModule collaborationModule = new CollaborationModule(persistenceInjector, configuration);
-        instance = persistenceInjector.createChildInjector(collaborationModule).createChildInjector(new AppServletModule()).createChildInjector(mongoModule);
+        instance = persistenceInjector.createChildInjector(mongoModule).createChildInjector(collaborationModule).createChildInjector(new AppServletModule());
     }
 
     @Override

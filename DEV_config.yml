@@ -3,6 +3,7 @@ systemLocale: zh_CN
 mongoConfiguration:
   serverAddress: localhost
   port: 27017
+  databaseName: collabContext
 
 database:
   driverClass: com.mysql.jdbc.Driver

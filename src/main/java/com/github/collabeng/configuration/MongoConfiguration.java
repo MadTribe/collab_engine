@@ -19,6 +19,11 @@ public class MongoConfiguration {
     @JsonProperty
     private Integer port;
 
+    @Valid
+    @NotNull
+    @JsonProperty
+    private String databaseName;
+
     public String getServerAddress() {
         return serverAddress;
     }
@@ -26,4 +31,10 @@ public class MongoConfiguration {
     public Integer getPort() {
         return port;
     }
+
+    public String getDatabaseName() {
+        return databaseName;
+    }
+
+
 }

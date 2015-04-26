@@ -46,6 +46,9 @@ public class PlanService {
     @Inject
     private PlanStepEventDao planStepEventDao;
 
+    @Inject
+    private ContextService contextService;
+
     public PlanService() {
     }
 
@@ -141,7 +144,9 @@ public class PlanService {
         PlanEntity planEntity =  planDaoProvider.find(id).orElseThrow(() -> new ItemNotFoundException("Plan", id));
         PlanStepEntity step = planEntity.getFirstStep();
 
-        Task task = new Task(null, step, TaskStatus.IN_PROGRESS);
+        TaskContext context = contextService.createNewContext();
+
+        Task task = new Task(context, step, TaskStatus.IN_PROGRESS);
 
         taskDao.persist(task);
 

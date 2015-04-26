@@ -6,6 +6,7 @@ import com.github.collabeng.domain.PlanStepEventEntity;
 import com.github.collabeng.domain.PlanStepEventParameter;
 import com.github.collabeng.domain.Task;
 import org.hibernate.loader.plan.build.spi.LoadPlanBuildingContext;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.invoke.MethodHandles;
@@ -17,17 +18,21 @@ import java.util.Set;
  * Created by paul.smout on 23/04/2015.
  */
 public class TaskEventHandlerAPI {
-    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final EventMessage eventMessage;
     private final Task task;
     private final PlanStepEventEntity eventDefinition;
+    private final PlanContext context;
 
-
-    public TaskEventHandlerAPI(PlanStepEventEntity eventDefinintion, Task task, EventMessage eventMessage) {
+    public TaskEventHandlerAPI(PlanStepEventEntity eventDefinition,
+                               Task task,
+                               EventMessage eventMessage,
+                               PlanContext context) {
         this.task = task;
-        this.eventDefinition = eventDefinintion;
+        this.eventDefinition = eventDefinition;
         this.eventMessage = eventMessage;
+        this.context = context;
     }
 
     public Map<String,Object> getParamsAsObject(String... paramNames){
@@ -49,7 +54,7 @@ public class TaskEventHandlerAPI {
     }
 
     public PlanContext context(){
-        return new PlanContext();
+        return context;
     }
 
 

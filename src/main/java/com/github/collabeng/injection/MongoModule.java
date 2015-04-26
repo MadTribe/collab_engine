@@ -2,8 +2,10 @@ package com.github.collabeng.injection;
 
 import com.github.collabeng.configuration.MongoConfiguration;
 import com.google.inject.AbstractModule;
+import com.google.inject.Provides;
 import com.mongodb.MongoClient;
 import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoDatabase;
 
 import java.util.Arrays;
 
@@ -13,6 +15,8 @@ import java.util.Arrays;
 public class MongoModule extends AbstractModule {
 
     private MongoConfiguration mongoConfiguration;
+
+    private MongoDatabase mongoDatabase;
 
     public MongoModule(MongoConfiguration mongoConfiguration) {
         this.mongoConfiguration = mongoConfiguration;
@@ -25,6 +29,12 @@ public class MongoModule extends AbstractModule {
         MongoClient mongoClient = new MongoClient(
                 Arrays.asList(new ServerAddress(mongoConfiguration.getServerAddress(),mongoConfiguration.getPort())));
 
-        bind(MongoClient.class).toInstance(mongoClient);
+        mongoDatabase = mongoClient.getDatabase(mongoConfiguration.getDatabaseName());
+
+    }
+
+    @Provides
+    public MongoDatabase getMongoDatabase(){
+        return mongoDatabase;
     }
 }
