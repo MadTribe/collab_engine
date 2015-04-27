@@ -88,7 +88,7 @@ public class PlanService {
     @Transactional
     public NewEntityResponse createPlanStep(NewPlanStepRequest newPlanStep,
                                               long planId) throws UnknownPlanException {
-        LOG.error("Creating plan step for plan {}", planId);
+        LOG.info("Creating plan step for plan {}", planId);
         PlanEntity plan = planDaoProvider.find(planId).orElseThrow(() -> new UnknownPlanException(format("Plan with id %s either doesn't exist on not owned by this user","" + planId )));
 
         PlanStepEntity planStep = new PlanStepEntity(plan,newPlanStep.getName(),newPlanStep.getDescription());

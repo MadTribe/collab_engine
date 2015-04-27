@@ -45,7 +45,7 @@ public class ScriptService {
         return new NewEntityResponse(newScript.getId());
     }
 
-    public String testScript(String script){
+    public Object testScript(String script){
         BasicSandbox basicSandbox = new BasicSandbox();
         // basicSandbox.getAllowedTypes().add(ScriptService.class);
         return sandbox.scriptRunner(script,this, basicSandbox );
@@ -87,7 +87,7 @@ public class ScriptService {
         return new ScriptDto(script);
     }
 
-    public String runTaskEventHandler(Script eventHandler,
+    public Object runTaskEventHandler(Script eventHandler,
                                       Task task,
                                       PlanStepEventEntity eventDefinintion,
                                       EventMessage eventMessage) {
@@ -102,7 +102,7 @@ public class ScriptService {
                                                           eventMessage,
                                                           planContext);
 
-        String resp = "";
+        Object resp = "";
 
         try {
             resp = sandbox.scriptRunner(eventHandler.getScriptContent(), api, basicSandbox );

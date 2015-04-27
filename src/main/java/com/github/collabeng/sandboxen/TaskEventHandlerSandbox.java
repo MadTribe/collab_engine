@@ -6,10 +6,7 @@ import groovy.lang.Closure;
 import groovy.lang.Script;
 import org.kohsuke.groovy.sandbox.GroovyValueFilter;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
 * Created by paul.smout on 15/04/2015.
@@ -21,6 +18,7 @@ public class TaskEventHandlerSandbox extends BasicSandbox {
         allowedTypes.add(TaskEventHandlerAPI.class);
         allowedTypes.add(HashMap.class);
         allowedTypes.add(PlanContext.class);
+        allowedTypes.add(ArrayList.class);
     }
 
 

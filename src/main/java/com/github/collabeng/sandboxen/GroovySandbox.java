@@ -8,6 +8,7 @@ import org.codehaus.groovy.control.customizers.ImportCustomizer;
 import org.kohsuke.groovy.sandbox.GroovyValueFilter;
 import org.kohsuke.groovy.sandbox.SandboxTransformer;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,7 +25,7 @@ public class GroovySandbox {
         allowedTypes.add(String.class);
     }
 
-    public String scriptRunner(final String script, final Object api, GroovyValueFilter valueFilter) {
+    public Object scriptRunner(final String script, final Object api, GroovyValueFilter valueFilter) {
         final ImportCustomizer imports = new ImportCustomizer();
         imports.addStaticStars("java.lang.Math");
 
@@ -53,7 +54,7 @@ public class GroovySandbox {
         if (clos == null) {
             return "No result avalible!";
         }
-        return clos.toString();
+        return clos;
     }
 
     public Set<Class> getAllowedTypes() {

@@ -45,6 +45,7 @@ public class EventsService {
 
     @Transactional
     public BaseResponse handleTaskEvent(EventMessage eventMessage) {
+        BaseResponse resp = new BaseResponse();
         LOG.info("Received Event: " + eventMessage);
 
         String name = eventMessage.getEventName();
@@ -64,7 +65,7 @@ public class EventsService {
 
                 Script eventHandler = event.getEventHandler();
                 if (event.getEventHandler() != null ) {
-                    runEventHandler(eventHandler, task, event, eventMessage);
+                   resp = runEventHandler(eventHandler, task, event, eventMessage);
                 }
 
                 PlanStepEntity step = event.getNextStep();
@@ -77,7 +78,9 @@ public class EventsService {
                     LOG.info("No Next Step ");
                 }
 
+
                 task = task.withStatus(event.getNextStatus());
+                LOG.info("Updating task to :" + task);
                 taskDao.merge(task);
             } else {
                 throw new TaskEventValidationException("Error Validating Event");
@@ -88,12 +91,12 @@ public class EventsService {
             throw new TaskEventValidationException("Error Validating Event");
         }
 
-        return new BaseResponse();
+        return resp;
 
     }
 
     private ScriptResponse runEventHandler(Script eventHandler, Task task, PlanStepEventEntity event, EventMessage eventMessage) {
-        String resp = scriptService.runTaskEventHandler(eventHandler, task, event, eventMessage);
+        Object resp = scriptService.runTaskEventHandler(eventHandler, task, event, eventMessage);
         return new ScriptResponse(resp);
     }
 

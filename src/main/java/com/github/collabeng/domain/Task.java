@@ -56,4 +56,17 @@ public class Task extends OwnedEntity {
         ret.status = nextStatus;
         return ret;
     }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                " id=" + getId() +
+                " name= " + getName() +
+                "context=" + context +
+                ", planStep=" + planStep +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                '}';
+    }
 }

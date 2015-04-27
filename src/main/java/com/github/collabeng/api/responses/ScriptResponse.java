@@ -4,16 +4,16 @@ package com.github.collabeng.api.responses;
  * Created by paul.smout on 25/04/2015.
  */
 public class ScriptResponse extends BaseResponse{
-    private String resp;
+    private Object resp;
 
     public ScriptResponse() {
     }
 
-    public ScriptResponse(String resp) {
+    public ScriptResponse(Object resp) {
         this.resp = resp;
     }
 
-    public String getResp() {
+    public Object getResp() {
         return resp;
     }
 }

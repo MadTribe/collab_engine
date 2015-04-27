@@ -1,10 +1,15 @@
 package com.github.collabeng.sandboxen;
 
+import com.github.collabeng.api.error.ScriptException;
+import com.github.collabeng.api.error.UnknownParameterException;
 import com.github.collabeng.constants.ContextAttributes;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import org.slf4j.LoggerFactory;
 
+import java.lang.invoke.MethodHandles;
+import java.util.List;
 import java.util.Map;
 
 import static com.mongodb.client.model.Filters.eq;
@@ -14,6 +19,7 @@ import static com.mongodb.client.model.Filters.eq;
  */
 public class PlanContext {
 
+    private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private MongoDatabase mongoDatabase;
 
     private Long contextId;
@@ -40,4 +46,29 @@ public class PlanContext {
 //        )
     }
 
+
+    public List<Map<String,Object>> getList(String name){
+        List<Map<String,Object>> ret = null;
+        MongoCollection<Document> contexts = mongoDatabase.getCollection(ContextAttributes.CONTEXTS_COLLECTION);
+        Document doc = contexts.find(eq(ContextAttributes.ID,contextId)).first();
+
+        if (doc.containsKey(name)){
+            Object field = doc.get(name);
+            LOG.info("field is of class " + field.getClass());
+            ret = handleField(field);
+        } else {
+            throw new ScriptException("Unknown List " + name, null);
+        }
+
+        return ret;
+    }
+
+
+    private List handleField(Object field){
+        return (List)field;
+    }
+
+    private List handleField(List field){
+        throw new ScriptException("Field is not a list", null);
+    }
 }
