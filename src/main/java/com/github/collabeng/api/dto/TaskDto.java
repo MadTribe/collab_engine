@@ -1,5 +1,9 @@
 package com.github.collabeng.api.dto;
 
+import com.github.collabeng.domain.PlanStepEventEntity;
+import com.github.collabeng.domain.Task;
+
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -9,11 +13,17 @@ public class TaskDto {
     private long id;
     private String name;
     private String description;
+    private List<PlanStepEvent> events = new ArrayList<>();
 
-    public TaskDto(long id, String name, String description) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
+    public TaskDto(Task task) {
+        this.id = task.getId();
+        this.name = task.getName();
+        this.description = task.getDescription();
+
+        List<PlanStepEventEntity> events = task.getPlanStep().getKnownPossibleEvents();
+        for (PlanStepEventEntity eventEntity : events){
+            this.events.add(new PlanStepEvent(eventEntity));
+        }
     }
 
     public long getId() {
@@ -28,4 +38,7 @@ public class TaskDto {
         return description;
     }
 
+    public List<PlanStepEvent> getEvents() {
+        return events;
+    }
 }

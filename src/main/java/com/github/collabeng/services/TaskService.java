@@ -30,7 +30,7 @@ public class TaskService {
         List<TaskDto> taskDtos = new ArrayList<>();
         List<Task> tasks = this.taskDaoProvider.get().allOpen();
         LOG.info("found {} tasks.", tasks.size());
-        tasks.forEach(task -> taskDtos.add(new TaskDto(task.getId(), task.getName(), task.getDescription())));
+        tasks.forEach(task -> taskDtos.add(new TaskDto(task)));
         return taskDtos;
     }
 

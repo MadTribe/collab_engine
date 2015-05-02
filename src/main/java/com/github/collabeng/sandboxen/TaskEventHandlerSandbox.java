@@ -16,6 +16,7 @@ public class TaskEventHandlerSandbox extends BasicSandbox {
 
     public TaskEventHandlerSandbox() {
         super();
+        // These should come from the script's Imports/permissions
         allowedTypes.add(TaskEventHandlerAPI.class);
         allowedTypes.add(HashMap.class);
         allowedTypes.add(PlanContext.class);

@@ -81,7 +81,7 @@ public class TaskEventHandlerAPI {
 
     /**
      * Using extremely simple template approach until the security implications of
-     * User submitting templates is better understood.
+     * User submitting templates is better understood. But will probably use Velocity.
      * @param template
      * @param binding
      * @return
