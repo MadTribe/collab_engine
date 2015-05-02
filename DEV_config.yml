@@ -9,7 +9,7 @@ database:
   driverClass: com.mysql.jdbc.Driver
   user: root
   password:
-  url: jdbc:mysql://localhost/collab?useUnicode=true&characterEncoding=utf-8
+  url: jdbc:mysql://localhost/collab2?useUnicode=true&characterEncoding=utf-8
   properties:
     charSet: UTF-8
   maxWaitForConnection: 1s

@@ -5,7 +5,7 @@ package com.github.collabeng.api.error;
  */
 public class UnknownScriptException extends BusinessException {
     public UnknownScriptException(String message) {
-        super("Unkown Script " + message);
+        super("Unknown Script " + message);
     }
 
 }

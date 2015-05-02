@@ -46,29 +46,61 @@ public class PlanContext {
 //        )
     }
 
+    public void saveToField(String name, Object value){
+        LOG.info("Saving value " + value + " to key " + name );
+        MongoCollection<Document> contexts = mongoDatabase.getCollection(ContextAttributes.CONTEXTS_COLLECTION);
+
+
+        contexts.updateOne(eq(ContextAttributes.ID,contextId),
+                new Document("$set", new Document(name, value )));
+
+    }
+
+
+    public Object getValue(String name){
+        LOG.info("Getting Context Value for name " + name);
+        Document doc = getContextDocument();
+        Object ret = null;
+        if (doc.containsKey(name)){
+            ret = doc.get(name);
+            LOG.info("field is of class " + ret.getClass());
+        } else {
+            throw new ScriptException("Unknown List " + name, null);
+        }
+        return ret;
+    }
+
 
     public List<Map<String,Object>> getList(String name){
-        List<Map<String,Object>> ret = null;
-        MongoCollection<Document> contexts = mongoDatabase.getCollection(ContextAttributes.CONTEXTS_COLLECTION);
-        Document doc = contexts.find(eq(ContextAttributes.ID,contextId)).first();
+        Document doc = getContextDocument();
+        List<Map<String, Object>> ret;
 
+        // TODO end game will be a hierarchical (tree probably, network maybe) of Contexts e.g. Global, Project, Plan, maybe task. OR whatever the user needs
+        // If a property is not found in the current context it will chain upwards. There will probably also be a syntax for absolute paths to  values from a root context
+        // A permissions model will be implemented.
         if (doc.containsKey(name)){
             Object field = doc.get(name);
             LOG.info("field is of class " + field.getClass());
             ret = handleField(field);
         } else {
-            throw new ScriptException("Unknown List " + name, null);
+            throw new ScriptException("Unknown Field " + name, null);
         }
 
         return ret;
     }
 
+    private Document getContextDocument() {
+        List<Map<String,Object>> ret = null;
+        MongoCollection<Document> contexts = mongoDatabase.getCollection(ContextAttributes.CONTEXTS_COLLECTION);
+        return contexts.find(eq(ContextAttributes.ID,contextId)).first();
+    }
+
 
     private List handleField(Object field){
+        // TODO verify object is a list of Documents
+
         return (List)field;
     }
 
-    private List handleField(List field){
-        throw new ScriptException("Field is not a list", null);
-    }
+
 }
